@@ -1,0 +1,25 @@
+---
+description: Rules for the website (the static site in site/, built by scripts/build-site.mjs, served by Vercel)
+globs: site/**,scripts/build-site.mjs,scripts/dev.mjs,scripts/serve.mjs,scripts/site/**,vercel.json
+alwaysApply: false
+---
+
+# Website
+
+`site/` is the site: static HTML + ~5 KB of JS, zero framework (see `docs/SITE.md`). **No framework for the demo
+site** (Next.js was built, measured and rejected on 2026-10-23: ~141 KB JS per page and a relaxed CSP). It must stay
+as light as the library's pitch: no UI/animation libraries, no images or webfonts, effects in CSS only.
+
+- Pages: `site/pages/<name>.html` with `<!--page {json} -->` front matter; `{{name}}` `{{display}}` `{{global}}`
+  `{{repo}}` `{{version}}` placeholders, never the literal project name. `/frameworks` is generated from README `## Frameworks`.
+- **Clean URLs:** link to `/frameworks`, never `/frameworks.html` (or `/index.html`, or a trailing slash).
+  Canonical, `og:url` and sitemap URLs are extensionless too. `vercel.json` keeps `cleanUrls: true` and
+  `trailingSlash: false`; `scripts/serve.mjs` mirrors them (200 clean, 308 from `.html`); the "clean URLs" test enforces it.
+- **CSP** `script-src 'self'; style-src 'self'`: no inline scripts, `<style>`, `style=""` or `on*=` handlers (the build
+  fails). Dynamic styles via CSSOM (`style.setProperty`). Page JS goes in `site/assets` via the `script` front-matter key.
+- The homepage is the demo: dark, editorial, the left-rail TOC with the gliding marker. No icon-above-title cards.
+  Every effect has a reduced-motion off switch.
+- Accessibility: status changes (e.g. Copy) are announced via the live region `#copy-live` in `layout.html`.
+- Live reload for anything visual: `npm run dev` (leave it running). Check 390px mobile (no horizontal overflow,
+  the "On this page" sheet works), screenshots, and Lighthouse on `npm run preview` (100s, CLS 0) before reporting.
+- Deploying to Vercel needs Byron's OK.

@@ -1,0 +1,82 @@
+{
+  "name": "chapterize-js",
+  "displayName": "Chapterize JS",
+  "globalName": "Chapterize",
+  "version": "0.1.0",
+  "description": "Automatic, accessible table of contents and scroll spy for any page: add data-spy to a nav and it builds the links, highlights the current section and glides a marker. Zero dependencies, zero JS config, works in every framework.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./types/index.d.ts",
+  "unpkg": "./dist/global.min.js",
+  "jsdelivr": "./dist/global.min.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./auto": {
+      "types": "./types/auto.d.ts",
+      "import": "./dist/auto.js",
+      "require": "./dist/auto.cjs",
+      "default": "./dist/auto.js"
+    },
+    "./global": "./dist/global.min.js",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "sideEffects": [
+    "./dist/auto.js",
+    "./dist/auto.min.js",
+    "./dist/auto.cjs",
+    "./dist/global.js",
+    "./dist/global.min.js"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "size": "node scripts/build.mjs --size",
+    "test": "npm run build && QUIET=1 node scripts/build-site.mjs && node --test --test-concurrency=1 test/*.test.mjs",
+    "test:firefox": "TEST_BROWSER=firefox npm test",
+    "test:webkit": "TEST_BROWSER=webkit npm test",
+    "test:all": "npm test && npm run test:firefox && npm run test:webkit",
+    "test:types": "npx -y -p typescript@5 tsc -p test/types",
+    "build:site": "npm run build && node scripts/build-site.mjs",
+    "dev": "node scripts/dev.mjs",
+    "preview": "npm run build:site && node scripts/serve.mjs 8080 site-dist"
+  },
+  "keywords": [
+    "chapterize",
+    "scrollspy",
+    "scroll-spy",
+    "table-of-contents",
+    "toc",
+    "tocbot-alternative",
+    "gumshoe-alternative",
+    "intersection-observer",
+    "accessibility",
+    "aria-current",
+    "vanilla-js",
+    "zero-dependencies",
+    "framework-agnostic"
+  ],
+  "author": "Byron Johnson",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byronjohnson/chapterize-js.git"
+  },
+  "homepage": "https://github.com/byronjohnson/chapterize-js#readme",
+  "bugs": {
+    "url": "https://github.com/byronjohnson/chapterize-js/issues"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.64.1"
+  }
+}

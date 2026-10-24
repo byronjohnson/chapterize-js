@@ -1,0 +1,13 @@
+/* Plain example: layout only. No colours, fonts or link styles: everything in the outline comes from
+   the library's built-in marker (data-spy-marker) with its defaults. */
+.layout { display: flex; gap: 3rem; max-width: 60rem; margin: 0 auto; padding: 0 1rem }
+article { flex: 1; min-width: 0; padding-bottom: 2rem }
+aside { flex: 0 0 14rem; order: 1 }
+aside nav { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow: auto }
+@media (max-width: 700px) {
+  .layout { display: block }
+  aside { display: contents }
+  /* Sticky outline on top; it scrolls on its own and keeps the active link in view. */
+  aside nav { top: 0; height: 11rem; background: Canvas; padding-block: .5rem; border-bottom: 1px solid }
+  h2, h3 { scroll-margin-top: 13rem }
+}

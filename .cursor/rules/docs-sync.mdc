@@ -1,0 +1,16 @@
+---
+description: Keep README, llms.txt, types, the site and tests in sync with the library
+globs: README.md,llms.txt,types/**,src/**,site/pages/**
+alwaysApply: false
+---
+
+# Docs sync
+
+When an attribute, option, method, event, CSS variable, preset or default changes, update **together**:
+`src/index.js` · `src/marker.css` · `types/index.d.ts` · README (Attributes / JavaScript / Events / The marker / Browser support) ·
+`llms.txt` · `site/pages/index.html` (attributes, API) · `site/pages/markers.html` (CSS variables) · tests.
+
+`test/site.test.mjs` ("docs accuracy") fails if a `data-spy-*` attribute read in `src/`, a `--spy-*` variable in `marker.css`
+or a runtime export is missing from those docs. The README `## Frameworks` section is the single source for `/frameworks`. Its Next.js recipe was verified in a real Next 16 app (2026-10-23): change it only with a re-check in a Next app.
+Sizes in README/AGENTS/PROJECT-GOALS are measured numbers: re-measure with `npm run size`, don't guess.
+Add a decisions-log entry to `docs/PROJECT-GOALS.md` (dated) for any product decision.

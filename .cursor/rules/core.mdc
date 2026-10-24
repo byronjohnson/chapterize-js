@@ -1,0 +1,35 @@
+---
+description: Chapterize JS core context: north star, goals, invariants and approval rules for every task in this repo
+globs:
+alwaysApply: true
+---
+
+# Chapterize JS: core rules
+
+**North star: be the best and most modern way to automatically add a table of contents to a preexisting page DOM.**
+Zero-dependency TOC + scrollspy by Byron Johnson; "the accessible, attribute-only Tocbot alternative".
+Name: **Chapterize JS** (npm `chapterize-js`, global `Chapterize`); never hard-code it, use `scripts/brand.mjs` / `{{name}}`. v0.1.0, unpublished.
+Full context: `docs/PROJECT-GOALS.md`; quick start: `AGENTS.md`.
+
+## Goals (never regress one to help another)
+1. Simpler than Tocbot: attributes only, zero JS config, auto ids.
+2. Zero deps; core `dist/index.min.js` < 5 KB gzip soft limit (now 5,022 B). Report the number when `src/` changes.
+3. Most beautiful: opt-in gliding marker (`line`, `pill`, `minimal`).
+4. Accessibility first: `aria-current`, auto label, focus to section, reduced motion = instant.
+5. Correct: last/short sections, offsets, first click, CSS smooth scroll, hash routers.
+6. Every framework + plain sites: SSR-safe, auto-init, DOM watching, idempotent, destroy/refresh.
+
+## Invariants
+- Modern features always have a fallback; never depend on one missing in Chromium, Firefox or WebKit.
+- CSSOM only for styles (CSP-safe); no `<style>`/`style=""` strings. Site CSP `script-src 'self'; style-src 'self'`.
+- `data-spy*`, `.is-active`, `.is-trail`, `spy:change`, `--spy-*`, `@layer spy` are frozen unless Byron says otherwise.
+
+## Approvals (hard stop)
+- Never `npm publish`, `git push`, `git init`, deploy, log in to services, or touch other folders (e.g. `/workspace/scrollspy-demo` (the original prototype), `/workspace/ghost-reveal`) without Byron's explicit OK.
+- Ask before breaking changes (renamed attributes/events, changed defaults).
+
+## Working habits
+- Byron edits files himself: re-read a file right before editing and keep his changes.
+- Don't invent facts (sizes, support, download counts, "tested with X"). Measure, cite, date; say what wasn't run.
+- Before reporting: `npm run test:all` green in all three engines.
+- Design taste: dark, editorial, distinctive; no icon-above-title cards; effects add no load weight.

@@ -1,0 +1,36 @@
+# Chapterize JS
+
+> A zero-dependency library that adds an automatic, accessible table of contents to an existing page DOM. Configured with HTML attributes only. About 5 KB gzip including the optional marker styles. Works in every framework and on plain sites.
+
+## Usage
+
+- Script tag: `<script src="https://unpkg.com/chapterize-js" defer></script>` (global `Chapterize`, auto-init; add `data-manual` to opt out).
+- npm: `import 'chapterize-js/auto'` (auto-init, SSR-safe) or `import { init, spy, refresh, destroy, slug } from 'chapterize-js'`.
+- Frameworks: render `<nav data-spy …>` and call `init()` once on the client after hydration (useEffect, onMounted, onMount, afterNextRender). DOM watching handles routes and re-renders. init() is idempotent.
+
+## Attributes (on the nav unless noted)
+
+- `data-spy`: required; spies the same-page links inside.
+- `data-spy-build[="selector"]`: build a nested <ol> from headings; empty = `main h2, main h3`. Missing ids are generated (slugs keep accents, duplicates get -2, -3).
+- `data-spy-marker[="line|pill|minimal"]`: built-in gliding marker (constructed stylesheet in `@layer spy`, CSP-safe).
+- `data-spy-offset="64"`: sticky header height. Default: the scroller's CSS `scroll-padding-top`.
+- `data-spy-hash="false"`: don't pushState `#id` on click (hash routers `#/`, `#!` are detected).
+- `data-spy-label` (heading): outline text. `data-spy-ignore` (heading or container): exclude.
+
+## Output
+
+- Active link: `.is-active` + `aria-current="location"`; ancestors: `.is-trail`.
+- Nav CSS variables: `--spy-y`, `--spy-h`, `--spy-x`, `--spy-w`, `--spy-progress`.
+- Marker inputs: `--spy-color`, `--spy-color-2`, `--spy-width`, `--spy-duration`, `--spy-ease`, `--spy-indent`, `--spy-rail`, `--spy-glow`, `--spy-band`, `--spy-radius`.
+- Event: `spy:change` (bubbles) with `detail { index, id, link, target, previous }`.
+
+## API
+
+- `init(options?)` → controller `{ instances, refresh(), destroy() }`. Options: `build`, `offset`, `marker`, `hash`, `observe` (default true), `root`.
+- `spy(nav, options?)` → instance `{ nav, links, targets, index, id, go(idOrIndex, behavior?), refresh(), marker(preset|false), destroy() }`.
+- `refresh()` / `destroy()`: every instance at once (`destroy()` also stops DOM watching until the next `init()`).
+- `slug(text, root?)` → the id the outline would generate. `version`, `defaults` (`{ marker, hash, observe }`, mutable).
+
+## Docs
+
+- README: https://github.com/byronjohnson/chapterize-js#readme

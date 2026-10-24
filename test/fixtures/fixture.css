@@ -1,0 +1,14 @@
+/* Test fixtures: layout only. Served with a strict CSP (script-src 'self'; style-src 'self'). */
+html { scroll-padding-top: 64px; }
+html.smooth { scroll-behavior: smooth; }
+body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: #1d1d1f; }
+.top { position: sticky; top: 0; height: 64px; z-index: 2; display: flex; align-items: center; padding: 0 1rem; background: #fff; border-bottom: 1px solid #ddd; box-sizing: border-box; }
+.layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 200px; gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+.side nav { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow: hidden auto; font-size: 14px; }
+main { min-width: 0; }
+.foot { padding: 1rem; border-top: 1px solid #ddd; }
+/* scroll-container fixture */
+.app { display: grid; grid-template-columns: 220px 1fr; height: 100vh; }
+.scroller { overflow-y: auto; padding: 0 1.5rem; }
+.scroller h2 { scroll-margin-top: 16px; }
+.app nav { padding: 1rem; }

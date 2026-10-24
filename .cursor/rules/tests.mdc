@@ -1,0 +1,18 @@
+---
+description: How to write and run tests (Playwright via node:test, three engines)
+globs: test/**
+alwaysApply: false
+---
+
+# Tests
+
+- `node:test` + `playwright-core`; `TEST_BROWSER=chromium|firefox|webkit` (Chromium = system Chrome). `npm run test:all` runs all three.
+- Files: `spy` (core behavior + activation oracle), `spa` (framework DOM churn: routes, re-rendered navs, late content,
+  hash routers, shadow DOM), `ssr`, `site` (built site + docs accuracy), `dev` (live-reload server). Fixtures in `test/fixtures/`, served with a strict CSP.
+- **Attach listeners before the action** (events, `waitForEvent`, console/CSP collectors before `goto`).
+- **Bound every wait** (`until(page, fn, arg, ms)` from `helpers.mjs`; no unbounded `waitForFunction`/`waitForEvent`).
+- **Kill stray servers before a full run:** `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp`.
+- Assert on behavior, not implementation details; collect page errors and CSP violations and assert none.
+- Use `Spy` in page code for the global build (defined by `helpers.mjs` from `globalName`), never the literal name.
+- A flaky test is a bug: find the race (e.g. a stale `scrollend`, an unfinished browser scroll animation) rather than adding sleeps.
+- Report pass/fail per engine; never skip a test to get green.

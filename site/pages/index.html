@@ -1,0 +1,165 @@
+<!--page {
+  "title": "{{display}}: the accessible, attribute-only table of contents",
+  "description": "Add a live, accessible table of contents to any existing page with one attribute. Builds the outline from your headings, highlights the section being read, glides a marker. Zero dependencies, works in every framework.",
+  "nav": "Docs", "order": 1
+} -->
+<!-- Mobile: compact "On this page" bar. Same headings, a second spy instance. -->
+<details class="otp" id="otp">
+  <summary>
+    <span class="otp-label">On this page</span>
+    <span class="otp-current" id="otp-current">Overview</span>
+    <span class="otp-count" id="otp-count" aria-hidden="true">01/10</span>
+    <svg class="otp-chev" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3.5 5.25 7 8.75l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="progress" aria-hidden="true"><i></i></span>
+  </summary>
+  <nav class="toc toc-sheet" data-spy data-spy-build="#main h2, #main h3" data-spy-marker aria-label="On this page (compact)"></nav>
+</details>
+
+<div class="layout">
+  <main id="main" class="doc" tabindex="-1">
+    <div class="hero">
+      <p class="eyebrow">Table of contents · ~5 KB gzip · zero dependencies</p>
+      <h1>Know where<br><span>you are.</span></h1>
+      <p class="lead">One attribute turns the headings already on your page into a live, accessible table of contents. It highlights the section being read, glides a marker between links, and works the same in every framework.</p>
+      ```html
+      <nav data-spy data-spy-build data-spy-marker></nav>
+      ```
+      <p class="hero-links"><a href="#install">Install <span aria-hidden="true">→</span></a><a href="/frameworks">Framework recipes <span aria-hidden="true">→</span></a><a href="/markers">Marker presets <span aria-hidden="true">→</span></a></p>
+    </div>
+
+    <h2 id="overview">Overview</h2>
+    <p>Long pages are hard to navigate. Readers lose their place, jump back to the top to scan the outline and miss the section they came for. {{display}} keeps a live outline next to the content and tells the reader, at a glance, where they are and how much is left.</p>
+    <p>It does two jobs. It <em>builds</em> a nested table of contents from the headings already in your DOM, giving every heading without an id a readable slug. Then it <em>spies</em> on those sections and marks the matching link as current while the reader scrolls. There is no JavaScript configuration: everything is an HTML attribute.</p>
+    <ul class="facts">
+      <li><b>Attribute-only.</b> <code>data-spy</code> on a nav is the whole setup. Ids are generated, sticky headers are read from your CSS <code>scroll-padding-top</code>.</li>
+      <li><b>Accessible first.</b> <code>aria-current="location"</code>, an automatic landmark name, focus that follows clicks, and reduced motion honoured live.</li>
+      <li><b>Correct at the edges.</b> Short final sections each get their turn, the first click lands, CSS <code>scroll-behavior: smooth</code> does not fight it.</li>
+      <li><b>Framework-proof.</b> It watches the DOM, so client-side routes, re-renders and late content just work. Safe to import during SSR.</li>
+      <li><b>A marker built in.</b> <code>data-spy-marker</code> draws the gliding line you see here, from a CSP-safe constructed stylesheet in a cascade layer.</li>
+    </ul>
+
+    <h2 id="install">Install</h2>
+    <p>One package, no stylesheet to load, no peer dependencies. Use whichever entry suits the site.</p>
+    <h3 id="npm">From npm</h3>
+    ```sh
+    npm install {{name}}
+    ```
+    <p>Import the <code>auto</code> entry once in your client bundle. It spies every <code>[data-spy]</code> nav now and in the future (it watches the DOM), and does nothing on the server.</p>
+    ```js
+    import '{{name}}/auto';
+    ```
+    <h3 id="script-tag">With a script tag</h3>
+    <p>No tooling at all? The global build registers <code>{{global}}</code> and initialises itself when the DOM is ready. Add <code>data-manual</code> to the tag to call <code>{{global}}.init()</code> yourself.</p>
+    ```html
+    <script src="https://unpkg.com/{{name}}" defer></script>
+    ```
+
+    <h2 id="quick-start">Quick start</h2>
+    <p>Add an empty nav where the outline should go. <code>data-spy-build</code> with no value reads the <code>h2</code> and <code>h3</code> headings inside <code>&lt;main&gt;</code>; give it a selector to choose others. Each level nests under the one before it.</p>
+    ```html
+    <nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>
+    ```
+    <p>Already have a list of links? Point them at your section ids and put <code>data-spy</code> on the container. Every same-page link inside it is matched to its target, including <code>/page#id</code> links from a router.</p>
+    ```html
+    <nav data-spy aria-label="Guide">
+      <a href="#intro">Intro</a>
+      <a href="#setup">Setup</a>
+      <a href="#usage">Usage</a>
+    </nav>
+    ```
+    <p>Clicking a link scrolls to the section, writes the hash without a jump, and moves keyboard focus to the section so the next <kbd>Tab</kbd> continues from there.</p>
+
+    <h2 id="attributes">Attributes</h2>
+    <p>Everything is configured on the nav. Attributes are live: change one and the nav updates.</p>
+    <dl class="spec">
+      <div><dt><code>data-spy</code></dt><dd>Turns the element into a scrollspy. Required.</dd></div>
+      <div><dt><code>data-spy-build</code></dt><dd>Builds a nested <code>&lt;ol&gt;</code> from headings. Empty: <code>main h2, main h3</code>. A value: your own selector.</dd></div>
+      <div><dt><code>data-spy-marker</code></dt><dd>Draws the built-in marker. <code>line</code> (default), <code>pill</code> or <code>minimal</code>.</dd></div>
+      <div><dt><code>data-spy-offset</code></dt><dd>Pixels hidden by a sticky header. Default: the page's <code>scroll-padding-top</code>.</dd></div>
+      <div><dt><code>data-spy-hash="false"</code></dt><dd>Do not write <code>#id</code> to the URL on click. Hash routers (<code>#/</code>, <code>#!</code>) are detected and left alone.</dd></div>
+      <div><dt><code>data-spy-label</code></dt><dd>On a heading: the text to use in the outline instead of the heading's own.</dd></div>
+      <div><dt><code>data-spy-ignore</code></dt><dd>On a heading or a container: keep it out of the built outline.</dd></div>
+    </dl>
+    <h3 id="sticky-headers">Sticky headers</h3>
+    <p>If a sticky header covers the top of the page, set <code>scroll-padding-top</code> on <code>html</code> to its height, which you probably want anyway for <code>#hash</code> links. {{display}} reads it, so clicks land below the header and the activation line moves down to match. A heading's own <code>scroll-margin-top</code> is respected too.</p>
+    <h3 id="active-section">Choosing the active section</h3>
+    <p>The active section is the last one whose top has crossed a line a quarter of the way down the viewport, below the offset. That matches what people perceive as "the section I am reading". Sections too short to reach the line at the bottom of the page share the last stretch of scrolling, so each one is highlighted in turn and the last one at the very bottom.</p>
+
+    <h2 id="javascript">JavaScript API</h2>
+    <p>Optional. The attributes cover the common cases; the API is there for apps that want control.</p>
+    ```js
+    import { init, spy } from '{{name}}';
+
+    const toc = init();              // every [data-spy] nav, now and later; idempotent
+    const one = spy(navElement, { build: 'article h2', marker: 'pill' });
+    one.go('install');               // scroll to a section by id or index
+    one.marker('minimal');           // switch presets, or false to remove
+    one.refresh();                   // re-measure after layout changes it cannot see
+    one.destroy();                   // undo everything it added
+    ```
+    <h3 id="events">Events</h3>
+    <p>When the active link changes, the nav dispatches a bubbling <code>spy:change</code> event:</p>
+    ```js
+    document.addEventListener('spy:change', (e) => {
+      const { index, id, link, target, previous } = e.detail;
+      document.title = `${link.textContent} · Docs`;
+    });
+    ```
+
+    <h2 id="marker">The marker</h2>
+    <p>With <code>data-spy-marker</code> the library draws the marker itself: a faint rail, a fill up to the active link, a glowing line that eases between links and a soft band behind the active row. No stylesheet to load. The styles are a constructed stylesheet, so they work under a strict <code>style-src 'self'</code> Content Security Policy, and they sit in <code>@layer spy</code>, so any rule you write wins.</p>
+    <h3 id="presets">Presets</h3>
+    <p>Three looks, one attribute: <code>line</code> (this page), <code>pill</code> (a rounded highlight glides behind the active link) and <code>minimal</code> (just the line). <a href="/markers">See them side by side</a>.</p>
+    <h3 id="styling">Styling</h3>
+    <p>Every visual reads a custom property on the nav, including the timing:</p>
+    ```css
+    .toc {
+      --spy-color: #a5b4ff;          /* line, glow, fill */
+      --spy-color-2: #f0abfc;        /* second gradient stop */
+      --spy-duration: .45s;          /* glide time */
+      --spy-ease: cubic-bezier(.16, 1, .3, 1);
+    }
+    ```
+    <p>Prefer to draw your own? Leave the attribute off. The nav still gets <code>--spy-y</code>, <code>--spy-h</code>, <code>--spy-x</code> and <code>--spy-w</code> (the active link's box) and <code>--spy-progress</code> (0 to 1). The active link gets <code>.is-active</code>, its parent entries <code>.is-trail</code>.</p>
+
+    <h2 id="frameworks">Frameworks</h2>
+    <p>{{display}} is plain DOM, so it works with any framework or none. Import it once, and its DOM watching handles route changes, re-rendered headings and navs that mount later. Importing during server rendering is a no-op.</p>
+    <ul class="fw-index">
+      <li><a href="/frameworks#react">React</a></li><li><a href="/frameworks#nextjs">Next.js</a></li><li><a href="/frameworks#vue">Vue</a></li><li><a href="/frameworks#nuxt">Nuxt</a></li><li><a href="/frameworks#svelte-sveltekit">Svelte</a></li><li><a href="/frameworks#angular">Angular</a></li><li><a href="/frameworks#astro">Astro</a></li><li><a href="/frameworks#solid">Solid</a></li><li><a href="/frameworks#wordpress">WordPress</a></li><li><a href="/frameworks#hugo">Hugo</a></li><li><a href="/frameworks#eleventy">Eleventy</a></li><li><a href="/frameworks#drupal">Drupal</a></li>
+    </ul>
+
+    <h2 id="accessibility">Accessibility</h2>
+    <p>The active link gets <code>aria-current="location"</code>, announced as "current location". A nav without a name is labelled by its own heading if it has one, or "On this page" otherwise.</p>
+    <h3 id="motion">Motion</h3>
+    <p>When the reader asks for reduced motion, clicks jump instantly, even if your CSS sets <code>scroll-behavior: smooth</code>, and the marker moves without gliding. Both follow the setting live, with no reload.</p>
+    <h3 id="focus">Focus</h3>
+    <p>After a click, focus moves to the section heading, so keyboard and screen-reader users continue reading from there instead of being stranded in the sidebar. When the outline is longer than its container, the active link is kept in view inside the nav without moving the page.</p>
+
+    <h2 id="compare">Compared</h2>
+    <p>The accessible, attribute-only alternative to Tocbot. Coming from Gumshoe, which has not been updated since 2019? The markup is the same idea, with the outline built for you.</p>
+    <div class="compare-wrap">
+    <table class="compare">
+      <thead><tr><th scope="col"></th><th scope="col">Setup</th><th scope="col">Builds TOC</th><th scope="col">aria-current</th><th scope="col">Reduced motion</th></tr></thead>
+      <tbody>
+        <tr><th scope="row" class="us">{{display}}</th><td>Attributes</td><td>Yes, with ids</td><td>Yes</td><td>Yes, live</td></tr>
+        <tr><th scope="row">Tocbot</th><td>JS config</td><td>Needs ids</td><td>No</td><td>No</td></tr>
+        <tr><th scope="row">Gumshoe</th><td>JS</td><td>No</td><td>No</td><td>No</td></tr>
+        <tr><th scope="row">Bootstrap ScrollSpy</th><td>Attributes</td><td>No</td><td>No</td><td>Partly</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+    <p><strong>Does it work without JavaScript?</strong> A hand-written list of links is an ordinary table of contents without the script. A built outline needs it.</p>
+    <p><strong>Can I have more than one?</strong> Yes. This page runs two: the sidebar and the compact mobile bar.</p>
+    <p><strong>What about the native CSS scroll markers?</strong> Chrome's <code>scroll-target-group</code> is promising but Chromium-only, and it has no events, no <code>aria-current</code> and no marker geometry. {{display}} is the cross-browser version today; the plan is to use the native feature where it helps once it ships more widely.</p>
+  </main>
+
+  <aside class="side">
+    <div class="side-in">
+      <div class="side-head"><span>On this page</span><span class="side-count" id="side-count" aria-hidden="true">01 / 10</span></div>
+      <nav class="toc toc-rail" data-spy data-spy-build="#main h2, #main h3" data-spy-marker aria-label="On this page"></nav>
+      <a class="totop" href="#main">Back to top <span aria-hidden="true">↑</span></a>
+    </div>
+  </aside>
+</div>

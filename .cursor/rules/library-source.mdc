@@ -1,0 +1,21 @@
+---
+description: Rules for editing the library source (src/, types/, scripts/build.mjs)
+globs: src/**,types/**,scripts/build.mjs,scripts/brand.mjs
+alwaysApply: false
+---
+
+# Library source
+
+- `src/index.js` is the whole library; `auto.js` = `init()` on import (SSR-safe); `global.js` = IIFE global (`package.json` `globalName`).
+  `marker.css` is inlined as a string at build time and adopted as a constructed stylesheet per root (`document` or shadow root).
+- **SSR:** no `window`/`document` access at module scope; `init()` returns an empty controller on the server; `slug()` works without a DOM.
+- **Activation:** one IntersectionObserver per nav; the line is offset + 25% of the viewport (`LINE`). The final half-viewport
+  of scroll is shared among short final sections; the bottom always belongs to the last. Don't add a scroll listener for activation.
+- **Clicks:** gap = max(offset, `scroll-margin-top`, `scroll-padding-top`); `instant` under reduced motion; the clicked item is held
+  until the `scrollend` that lands on the destination (3 s cap), then until the position moves ≥3px; wheel/touch/keys release it.
+- **DOM watching:** one MutationObserver on `documentElement`, 40 ms debounce, soft refresh; the library's own writes run inside
+  `quiet()` so they never retrigger it. Removing a nav (or its `data-spy`) destroys its instance.
+- **Destroy restores everything:** generated list, generated ids, `tabindex`, labels, classes, CSS vars, marker elements, listeners.
+- **Size:** report `npm run size` before/after. Every byte must earn its place; core min+gzip < 5 KB soft limit.
+- **Types:** update `types/index.d.ts` with any API change; `npm run test:types`; JSDoc defaults must match `defaults`.
+- No dependencies, no framework code, no CSS file, no `innerHTML` with styles. Targets: chrome111 / firefox113 / safari16.4.
