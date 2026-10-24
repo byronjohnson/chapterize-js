@@ -31,68 +31,84 @@ The npm `files` allowlist is `dist` + `types` only (Byron: no docs files in the 
 | --- | --- |
 | `npm run build` | library → `dist/` (ESM, CJS, IIFE global, minified; prints raw + gzip sizes) |
 | `npm run size` | gzip -9 size of every `dist/*.js` |
-| `npm run dev` | live site at http://localhost:8080 (SSE reload, CSS hot swap, error overlay). Leave it running |
-| `npm run build:site` | library + site → `site-dist/` |
-| `npm run preview` | production-like serve of `site-dist/` (Vercel rules; use for Lighthouse) |
-| `npm test` | build + site build + all tests in Chromium (system Chrome) |
+| `npm test` | build + all library tests in Chromium (system Chrome) |
 | `npm run test:all` | Chromium, Firefox, WebKit. Must be green before you report |
 | `npm run test:types` | TypeScript check of `types/` (`test/types`) |
-| `node scripts/screens.mjs [path-prefix]` | screenshots of the built site (home desktop/mobile, sheet, plain, markers, frameworks); `SCREENS_BASE=<url>` shoots a running server |
+| `npm run serve` | serves this repo on :8080 for poking at the test fixtures (`/test/fixtures/basic.html`) |
 
-Before a full run: `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp` (stray servers on 8080 break the dev test).
+Before a full run: `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp`.
+
+## Two repos: this library and the website
+
+This repo is **only the library** that goes to GitHub (`byronjohnson/chapterize-js`) and npm (`chapterize-js`). The
+website is the sibling repo **`chapterize-js-site`** (split on 2026-10-23, the same way as `ghost-reveal` /
+`ghost-reveal-site`). Check them out next to each other:
+
+```
+projects/
+  chapterize-js/        this library (src, dist, types, README, llms.txt)
+  chapterize-js-site/   the website (site/, build + dev server, vercel.json, site tests, docs/SITE.md)
+```
+
+The site reads this checkout through its `scripts/lib-root.mjs` (`../chapterize-js`, or `$CHAPTERIZE_ROOT`):
+`dist/` (bundled into the pages and served at `/dist`), `README.md` `## Frameworks` (rendered as `/frameworks`),
+`llms.txt` (served at `/llms.txt`), `package.json` (the name), `src/` + `types/` (its docs-accuracy test). Each site build
+copies those into the site repo's committed `vendor/chapterize-js/`, which is what Vercel builds from (this package
+is not on npm yet). `npm run dev` there watches this repo's `src/`, `README.md`, `llms.txt`, `types/` and `package.json`
+and runs this repo's `npm run build` on a `src/` change. After a library change that the site shows, run the site's
+`npm test` (it re-syncs and checks the snapshot) and commit `vendor/` there too.
 
 ## Layout
 
 ```
 src/            index.js (core), auto.js (auto-init entry), global.js (IIFE window global), marker.css (inlined at build)
-types/          index.d.ts, auto.d.ts (hand-written; the docs test checks them against the runtime exports)
-dist/           built bundles (generated; shipped to npm)
-site/           THE website (static, zero-framework): pages/*.html (front matter), partials/ (layout, bare-layout, frameworks.mjs), assets/, public/
-scripts/        brand.mjs (THE name), build.mjs, build-site.mjs, dev.mjs, dev-client.js, serve.mjs, screens.mjs, site/
-test/           spy (core behavior), spa (framework/SPA DOM churn), ssr, site (+ docs accuracy), dev; fixtures/; types/
-docs/           PROJECT-GOALS.md, ROADMAP.md (native CSS), SITE.md (site build, clean URLs, Vercel, adding pages)
-README.md, llms.txt   user docs + compact agent reference (keep in sync; README "## Frameworks" feeds /frameworks)
+types/          index.d.ts, auto.d.ts (hand-written; test/docs.test.mjs checks them against the runtime exports)
+dist/           built bundles (generated, committed; shipped to npm; the site vendors them)
+scripts/        brand.mjs (THE name), build.mjs, serve.mjs (test server)
+test/           spy (core behavior), spa (framework/SPA DOM churn), ssr (+ package exports), docs (README/llms/types accuracy);
+                fixtures/ (the test pages, served with a strict CSP); types/
+docs/           PROJECT-GOALS.md, ROADMAP.md (native CSS)
+README.md, llms.txt   user docs + compact agent reference (keep in sync; README "## Frameworks" feeds the site's /frameworks)
 ```
 
-Generated, never edit: `dist/`, `site-dist/`, `.site-dev/`.
+Generated, never edit: `dist/`. The site guide (pages, clean URLs, Vercel) is `docs/SITE.md` in `chapterize-js-site`.
 
 ## Invariants
 
 - Zero runtime deps, no CSS file, no framework code in the library. Without JS the page and its links still work.
 - Importing never touches `window`/`document`; `init()` on the server is a no-op; `slug()` works on the server.
 - CSP: the library never injects `<style>` or `style=""` strings; styles go through CSSOM (`adoptedStyleSheets`,
-  `style.setProperty`). Site: `script-src 'self'; style-src 'self'`, no inline scripts/styles/handlers (the build fails).
-- The site is static HTML + ~5 KB of JS, no framework (a Next.js version was built, measured and rejected on
-  2026-10-23; see docs/PROJECT-GOALS.md). Clean URLs only: `/frameworks`, never `/frameworks.html`, in links,
-  canonical/og URLs and the sitemap (vercel.json `cleanUrls: true`, `trailingSlash: false`; tested).
+  `style.setProperty`). The site (in `chapterize-js-site`) runs under `script-src 'self'; style-src 'self'`.
 - `data-spy*` attributes, `.is-active` / `.is-trail`, `spy:change`, `--spy-*` variables and `@layer spy` are
   independent of the project name and frozen unless Byron says otherwise.
 - Every modern feature has a fallback (see README "Browser support"); never require one that isn't in all three engines.
-- API change ⇒ update `src/`, `types/`, README, `llms.txt`, the site and tests together (the docs test checks drift).
+- API change ⇒ update `src/`, `types/`, README, `llms.txt` and tests here (`test/docs.test.mjs` checks drift), then the
+  homepage attributes/API and `/markers` CSS variables in `chapterize-js-site` (its docs test checks them against this repo).
 
 ## Renaming (if the name ever changes again)
 
 The name lives in `package.json`: `name` (npm + import specifier), `displayName` (prose, titles), `globalName`
-(script-tag global), `repository.url`. `scripts/brand.mjs` reads it; the build, site (`{{name}}`, `{{display}}`,
-`{{global}}`, `{{repo}}` placeholders), banner, dev server and tests use it. To rename:
+(script-tag global), `repository.url`. `scripts/brand.mjs` reads it for the build banner, the global and the tests; the
+site repo reads this same `package.json` (its `scripts/brand.mjs`, `{{name}}` `{{display}}` `{{global}}` `{{repo}}`). To rename:
 
-1. Edit those four fields in `package.json` (and `homepage`/`bugs` if set). Check the npm name is free.
+1. Edit those four fields in `package.json` (and `homepage`/`bugs`). Check the npm name is free.
 2. Replace the literal name where a file can't read package.json: `README.md` and `llms.txt` (install/import lines),
-   `site/assets/site.js` (`import … from 'chapterize-js'`, resolved by an esbuild alias), `test/types/check.ts`
-   (self-import), comments in `src/auto.js` and `types/auto.d.ts`. Find them: `rg -i chapterize --glob '!node_modules' --glob '!dist' --glob '!site-dist'`.
-3. Set `SITE_URL` (Vercel env var, or the default in `scripts/build-site.mjs`, currently `https://<name>.vercel.app`; the domain is not decided yet).
-4. `npm install` (refreshes package-lock + the self-reference), `npm run test:all`, `npm run test:types`.
+   `test/types/check.ts` (self-import), comments in `src/auto.js` and `types/auto.d.ts`; in `chapterize-js-site`:
+   `site/assets/site.js` (`import … from 'chapterize-js'`, resolved by an esbuild alias), `scripts/lib-root.mjs` and
+   `scripts/sync-lib.mjs` (sibling folder + vendor folder names). Find them: `rg -i chapterize --glob '!node_modules' --glob '!dist' --glob '!vendor'`.
+3. Set `SITE_URL` for the site (Vercel env var; see the site's `docs/SITE.md`; the domain is not decided yet).
+4. `npm install` here (refreshes package-lock + the self-reference), `npm run test:all`, `npm run test:types`; then the site's `npm run test:all`.
 
 ## Workflow rules
 
-- **Approvals:** never publish to npm, push to GitHub, deploy, or delete/move other folders without Byron's explicit OK. No `git init` (Byron does git).
+- **Approvals:** never publish to npm, push to GitHub, deploy, or delete/move other folders without Byron's explicit OK. No `git init` (Byron does git; this repo and `chapterize-js-site` are separate git repos).
 - **Byron edits files himself.** Re-read a file right before changing it and keep his edits.
-- **Design taste:** dark, editorial, distinctive. No icon-above-title card grids. Effects add no load weight (CSS only, no images/fonts).
+- **Design taste** (mostly for the site repo): dark, editorial, distinctive. No icon-above-title card grids. Effects add no load weight (CSS only, no images/fonts).
 - **Honesty:** measure or cite sizes, browser support and framework claims; say what was and wasn't run.
 - **Tests:** attach listeners before the action, bound every wait, report results per engine.
 
 ## Read more
 
 [`docs/PROJECT-GOALS.md`](docs/PROJECT-GOALS.md) (north star, goals, competition, design taste, decisions log) ·
-[`docs/ROADMAP.md`](docs/ROADMAP.md) (native CSS scroll markers, next steps) · [`docs/SITE.md`](docs/SITE.md) (site build, clean URLs, Vercel setup, adding pages) ·
+[`docs/ROADMAP.md`](docs/ROADMAP.md) (native CSS scroll markers, next steps) · `../chapterize-js-site/AGENTS.md` and its `docs/SITE.md` (site build, clean URLs, Vercel setup, adding pages) ·
 [`README.md`](README.md) · [`llms.txt`](llms.txt)

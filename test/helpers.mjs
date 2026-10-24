@@ -11,7 +11,7 @@ export const CSP = "default-src 'self'; script-src 'self'; style-src 'self'";
 const exe = name == 'chromium' ? process.env.CHROME_PATH || ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync) : undefined;
 
 export async function setup() {
-  const server = await serve(0, undefined, { handle: (req, res, p) => p == '/favicon.ico' && !!res.writeHead(204).end(), headers: (p) => (p.startsWith('/test/') ? { 'content-security-policy': CSP, 'cache-control': 'no-store' } : {}) });
+  const server = await serve(0, { handle: (req, res, p) => p == '/favicon.ico' && !!res.writeHead(204).end(), headers: (p) => (p.startsWith('/test/') ? { 'content-security-policy': CSP, 'cache-control': 'no-store' } : {}) });
   const base = `http://127.0.0.1:${server.address().port}`;
   const browser = await { chromium, firefox, webkit }[name].launch({ executablePath: exe, headless: true });
   const open = async (path, ctxOpts = {}) => {

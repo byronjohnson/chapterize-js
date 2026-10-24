@@ -1,5 +1,6 @@
 // The project's name lives in ONE place: package.json ("name", "displayName", "globalName").
-// Every script reads it from here; the library source and the site templates never hard-code it.
+// Every script here reads it from this file; the sibling site repo (chapterize-js-site) reads the same package.json.
+// The library source and the site templates never hard-code it.
 // Renaming the project: see "Renaming" in AGENTS.md.
 import { readFileSync } from 'node:fs';
 

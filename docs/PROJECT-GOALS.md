@@ -7,6 +7,7 @@
 > with a fallback. Works in every framework and on plain sites. Core < 5 KB gzip (soft limit; always report the number).
 
 Read this before changing anything. `AGENTS.md` is the short version; `.cursor/rules/*.mdc` are the always-on rules.
+This is the library repo (`chapterize-js`); the website is the sibling repo `chapterize-js-site` (its own `AGENTS.md`, `docs/SITE.md`).
 
 ## 1. Summary
 
@@ -77,7 +78,7 @@ layer names (`data-spy*`, `.is-active`, `spy:change`, `--spy-*`, `@layer spy`) d
 Dark, editorial homepage that is itself the demo (the left rail TOC with the gliding marker, section counters,
 reading progress via scroll-driven animation with a JS fallback). Pages: `/` (docs), `/frameworks` (generated from
 README), `/markers` (live presets), `/plain` (the unstyled plain-HTML example using the global build), `/404`.
-Static HTML on Vercel (`site/` → `site-dist/`), ~5 KB of site JS, no framework. Clean URLs (`/frameworks`, never
+Lives in the separate repo `chapterize-js-site` (see the 2026-10-23 split below). Static HTML on Vercel (`site/` → `site-dist/`), ~5 KB of site JS, no framework. Clean URLs (`/frameworks`, never
 `.html`), CSP `script-src 'self'; style-src 'self'`, hashed assets, sitemap, Lighthouse 100 across the board. No
 images or webfonts.
 
@@ -123,11 +124,26 @@ images or webfonts.
   churn, SSR) + the README Next.js recipe instead, which was rewritten and verified in a real Next 16 app (TOC builds
   and rebuilds after `next/link` navigation in Chromium, Firefox, WebKit). Kept from that work: the Copy buttons'
   screen-reader live region (`#copy-live`). Pages stay on clean URLs (`/frameworks`, no `.html`), tested.
+- **2026-10-23: library and website split into two repos** (Byron: "like we did with GhostReveal", for separate git
+  tracking). Mirrors `ghost-reveal` / `ghost-reveal-site`: sibling folders **`chapterize-js`** (this repo: `src`, `dist`,
+  `types`, the library build, library tests spy/spa/ssr/docs + types, README, LICENSE, llms.txt, AGENTS.md, library
+  rules/skills, PROJECT-GOALS, ROADMAP; no site files, no `vercel.json`) and **`chapterize-js-site`** (`site/`,
+  build-site/serve/dev/screens, `vercel.json`, site + dev tests, `docs/SITE.md`, its own AGENTS.md/README/rules/skills,
+  `private: true`). Like ghost-reveal-site, the site finds the library through `scripts/lib-root.mjs`
+  (`$CHAPTERIZE_ROOT` → sibling `../chapterize-js` → `node_modules/chapterize-js` → committed `vendor/chapterize-js`).
+  Difference from Ghost Reveal: ghost-reveal is on npm, so its site installs it; `chapterize-js` is not published,
+  so every site build copies the library's `dist/`, `types/`, `src/`, README, llms.txt, package.json and LICENSE into
+  the site's committed `vendor/chapterize-js/` (`scripts/sync-lib.mjs`) and Vercel builds from that snapshot. `/frameworks`
+  reads `../chapterize-js/README.md` when present, else the vendored copy; a site test fails if the snapshot drifts from the
+  checkout. Once published, the site can add `"chapterize-js"` as a dependency (lib-root already prefers it over `vendor/`).
+  Test count 27 → 29 (library 18: the docs-accuracy checks for README/llms/types became their own library test; site 11:
+  + a vendor drift test).
 
 ## 11. Open questions for Byron
 
 1. Domain / `SITE_URL` (default `https://chapterize-js.vercel.app`, derived from the npm name, until a domain is chosen).
-2. Create the GitHub repo (placeholder `github.com/byronjohnson/chapterize-js` is already in package.json, README, llms.txt).
+2. Create the two GitHub repos (placeholder `github.com/byronjohnson/chapterize-js` is already in package.json, README, llms.txt;
+   the site repo name, e.g. `byronjohnson/chapterize-js-site`, is up to Byron).
 3. OG image (none yet; text-only cards).
 4. Whether the marker CSS (≈0.74 KB gzip) should move to an opt-in entry (`/marker`) if the core needs headroom.
 

@@ -41,14 +41,12 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "size": "node scripts/build.mjs --size",
-    "test": "npm run build && QUIET=1 node scripts/build-site.mjs && node --test --test-concurrency=1 test/*.test.mjs",
+    "test": "npm run build && node --test --test-concurrency=1 test/*.test.mjs",
     "test:firefox": "TEST_BROWSER=firefox npm test",
     "test:webkit": "TEST_BROWSER=webkit npm test",
     "test:all": "npm test && npm run test:firefox && npm run test:webkit",
     "test:types": "npx -y -p typescript@5 tsc -p test/types",
-    "build:site": "npm run build && node scripts/build-site.mjs",
-    "dev": "node scripts/dev.mjs",
-    "preview": "npm run build:site && node scripts/serve.mjs 8080 site-dist"
+    "serve": "node scripts/serve.mjs"
   },
   "keywords": [
     "chapterize",

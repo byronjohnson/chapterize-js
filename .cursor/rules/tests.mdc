@@ -8,7 +8,8 @@ alwaysApply: false
 
 - `node:test` + `playwright-core`; `TEST_BROWSER=chromium|firefox|webkit` (Chromium = system Chrome). `npm run test:all` runs all three.
 - Files: `spy` (core behavior + activation oracle), `spa` (framework DOM churn: routes, re-rendered navs, late content,
-  hash routers, shadow DOM), `ssr`, `site` (built site + docs accuracy), `dev` (live-reload server). Fixtures in `test/fixtures/`, served with a strict CSP.
+  hash routers, shadow DOM), `ssr` (+ package exports), `docs` (README/llms.txt/types accuracy). Fixtures in `test/fixtures/`,
+  served by `scripts/serve.mjs` with a strict CSP. Site and dev-server tests live in the sibling repo `chapterize-js-site`.
 - **Attach listeners before the action** (events, `waitForEvent`, console/CSP collectors before `goto`).
 - **Bound every wait** (`until(page, fn, arg, ms)` from `helpers.mjs`; no unbounded `waitForFunction`/`waitForEvent`).
 - **Kill stray servers before a full run:** `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp`.
