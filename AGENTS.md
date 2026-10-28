@@ -13,7 +13,7 @@ tracks the section being read with IntersectionObserver, marks it with `.is-acti
 and optionally draws a gliding marker from a constructed stylesheet (CSP-safe, `@layer chapter`).
 Positioning: **the accessible, attribute-only Tocbot alternative** (Gumshoe users are the easy first audience).
 Name: **Chapterize JS** (npm `chapterize-js`, script-tag global `Chapterize`; named 2026-10-23, see the decisions log).
-v0.1.0, **unpublished**, no git repo yet (Byron does git).
+v0.1.0, **unpublished**. Local git is on `develop`; there is no GitHub remote yet (Byron does git).
 The npm `files` allowlist is `dist` + `types` only (Byron: no docs files in the package).
 
 ## Goals (never regress one to help another)

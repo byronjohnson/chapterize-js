@@ -286,6 +286,8 @@ Current Chrome, Edge, Firefox and Safari (Safari 16.4+). Modern features are use
 | scroll-driven animations | (site only) the header progress bar | `--chapter-progress` / `chapter:change` |
 | native `scroll-target-group` | not used yet: Chromium-only, see docs/ROADMAP.md | n/a |
 
+`init()` watches the document, not shadow trees. For a nav or headings inside a shadow root, call `chapterjs(nav)` yourself and `refresh()` after that tree changes.
+
 ## Accessibility
 
 - The active link gets `aria-current="location"`.

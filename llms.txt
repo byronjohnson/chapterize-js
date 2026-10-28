@@ -30,6 +30,7 @@
 - `chapterjs(nav, options?)` → instance `{ nav, links, targets, index, id, go(idOrIndex, behavior?), refresh(), marker(preset|false), destroy() }`.
 - `refresh()` / `destroy()`: every instance at once (`destroy()` also stops DOM watching until the next `init()`).
 - `slug(text, root?)` → the id the outline would generate. `version`, `defaults` (`{ marker, hash, observe }`, mutable).
+- Shadow roots: `init()` does not watch them. Call `chapterjs(nav)` and `refresh()` after changes.
 
 ## Docs
 
