@@ -1,18 +1,18 @@
 /*! chapterize-js v0.1.0 | MIT */
 
 // src/marker.css
-var marker_default = '@layer spy{[data-spy-on]{--_c:var(--spy-color,#8b7cf6);--_c2:var(--spy-color-2,var(--_c));--_w:var(--spy-width,2px);--_t:var(--spy-duration,.6s) var(--spy-ease,cubic-bezier(.16,1,.3,1));position:relative;isolation:isolate;padding-left:calc(var(--_w) + 1em)}[data-spy-on] :is(ol,ul){list-style:none;margin:0;padding:0}[data-spy-on] li li{padding-left:var(--spy-indent,1em)}[data-spy-on] li li a{font-size:.94em}[data-spy-on] a{display:block;padding:.3em 0;color:inherit;text-decoration:none;opacity:.62}[data-spy-on] :is(a:hover,.is-trail){opacity:.85}[data-spy-on] .is-active{opacity:1}spy-rail,spy-band{position:absolute;left:0;top:0;pointer-events:none}spy-rail{width:var(--_w);height:var(--_l);background:linear-gradient(#0000,color-mix(in srgb,var(--_c) 70%,#0000)) 50% 0 / 1px calc(var(--spy-y) + var(--spy-h)) no-repeat,linear-gradient(var(--spy-rail,color-mix(in srgb,currentColor 16%,#0000)) 0 0) 50% 0 / 1px 100% no-repeat}spy-rail:after{content:"";position:absolute;inset:0 0 auto;height:var(--spy-h);translate:0 var(--spy-y);border-radius:9px;background:linear-gradient(var(--_c),var(--_c2));box-shadow:var(--spy-glow,0 0 12px color-mix(in srgb,var(--_c) 80%,#0000))}spy-band{z-index:-1;right:0;height:var(--spy-h);translate:0 var(--spy-y);border-radius:0 .5em .5em 0;background:var(--spy-band,linear-gradient(90deg,color-mix(in srgb,var(--_c) 15%,#0000),#0000 80%))}[data-spy-on=pill]{padding-left:0}[data-spy-on=pill] a{padding:.35em .75em}[data-spy-on=pill] spy-rail{display:none}[data-spy-on=pill] spy-band{width:var(--spy-w);translate:var(--spy-x) var(--spy-y);border-radius:var(--spy-radius,.55em);background:var(--spy-band,color-mix(in srgb,var(--_c) 14%,#0000));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--_c) 26%,#0000)}[data-spy-on=minimal] spy-band{display:none}[data-spy-on=minimal] spy-rail{background:none}[data-spy-on=minimal] spy-rail:after{box-shadow:none;background:var(--_c)}@media(prefers-reduced-motion:no-preference){[data-spy-on] a{transition:opacity .25s}spy-rail{transition:background-size var(--_t)}spy-rail:after,spy-band{transition:translate var(--_t),height var(--_t),width var(--_t)}}}';
+var marker_default = '@layer chapter{[data-chapter-on]{--_c:var(--chapter-color,#8b7cf6);--_c2:var(--chapter-color-2,var(--_c));--_w:var(--chapter-width,2px);--_t:var(--chapter-duration,.6s) var(--chapter-ease,cubic-bezier(.16,1,.3,1));position:relative;isolation:isolate;padding-left:calc(var(--_w) + 1em)}[data-chapter-on] :is(ol,ul){list-style:none;margin:0;padding:0}[data-chapter-on] li li{padding-left:var(--chapter-indent,1em)}[data-chapter-on] li li a{font-size:.94em}[data-chapter-on] a{display:block;padding:.3em 0;color:inherit;text-decoration:none;opacity:.62}[data-chapter-on] :is(a:hover,.is-trail){opacity:.85}[data-chapter-on] .is-active{opacity:1}chapter-rail,chapter-band{position:absolute;left:0;top:0;pointer-events:none}chapter-rail{width:var(--_w);height:var(--_l);background:linear-gradient(#0000,color-mix(in srgb,var(--_c) 70%,#0000)) 50% 0 / 1px calc(var(--chapter-y) + var(--chapter-h)) no-repeat,linear-gradient(var(--chapter-rail,color-mix(in srgb,currentColor 16%,#0000)) 0 0) 50% 0 / 1px 100% no-repeat}chapter-rail:after{content:"";position:absolute;inset:0 0 auto;height:var(--chapter-h);translate:0 var(--chapter-y);border-radius:9px;background:linear-gradient(var(--_c),var(--_c2));box-shadow:var(--chapter-glow,0 0 12px color-mix(in srgb,var(--_c) 80%,#0000))}chapter-band{z-index:-1;right:0;height:var(--chapter-h);translate:0 var(--chapter-y);border-radius:0 .5em .5em 0;background:var(--chapter-band,linear-gradient(90deg,color-mix(in srgb,var(--_c) 15%,#0000),#0000 80%))}[data-chapter-on=pill]{padding-left:0}[data-chapter-on=pill] a{padding:.35em .75em}[data-chapter-on=pill] chapter-rail{display:none}[data-chapter-on=pill] chapter-band{width:var(--chapter-w);translate:var(--chapter-x) var(--chapter-y);border-radius:var(--chapter-radius,.55em);background:var(--chapter-band,color-mix(in srgb,var(--_c) 14%,#0000));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--_c) 26%,#0000)}[data-chapter-on=minimal] chapter-band{display:none}[data-chapter-on=minimal] chapter-rail{background:none}[data-chapter-on=minimal] chapter-rail:after{box-shadow:none;background:var(--_c)}@media(prefers-reduced-motion:no-preference){[data-chapter-on] a{transition:opacity .25s}chapter-rail{transition:background-size var(--_t)}chapter-rail:after,chapter-band{transition:translate var(--_t),height var(--_t),width var(--_t)}}}';
 
 // src/index.js
 var defaults = { marker: false, hash: true, observe: true };
-var SEL = "[data-spy]";
-var KEY = /* @__PURE__ */ Symbol.for("data-spy");
+var SEL = "[data-chapter]";
+var KEY = /* @__PURE__ */ Symbol.for("data-chapter");
 var ACTIVE = "is-active";
 var TRAIL = "is-trail";
 var PRESETS = { line: 1, pill: 1, minimal: 1 };
 var LINE = 0.25;
-var WATCHED = ["id", "href", "data-spy", "data-spy-build", "data-spy-offset", "data-spy-marker", "data-spy-hash", "data-spy-label", "data-spy-ignore"];
-var PROPS = ["spy-y", "spy-h", "spy-x", "spy-w", "spy-progress", "_l"];
+var WATCHED = ["id", "href", "data-chapter", "data-chapter-build", "data-chapter-offset", "data-chapter-marker", "data-chapter-hash", "data-chapter-label", "data-chapter-ignore"];
+var PROPS = ["chapter-y", "chapter-h", "chapter-x", "chapter-w", "chapter-progress", "_l"];
 var instances = /* @__PURE__ */ new Set();
 var off = /* @__PURE__ */ new WeakSet();
 var scanned = /* @__PURE__ */ new WeakSet();
@@ -30,7 +30,7 @@ var hashId = () => {
     return location.hash.slice(1);
   }
 };
-var ours = (n) => n.localName == "spy-rail" || n.localName == "spy-band";
+var ours = (n) => n.localName == "chapter-rail" || n.localName == "chapter-band";
 var relevant = (r) => r.type != "childList" || [...r.addedNodes, ...r.removedNodes].some((n) => !ours(n));
 function setup() {
   const frame = (fn) => {
@@ -81,13 +81,13 @@ var slug = (text, root = globalThis.document) => {
   while (root?.getElementById(id)) id = base + "-" + ++n;
   return id;
 };
-function spy(nav, o = {}) {
+function chapterjs(nav, o = {}) {
   if (nav[KEY]) return o.marker != null && nav[KEY].marker(o.marker), nav[KEY];
   off.delete(nav);
   const E = env ||= setup();
   const doc = nav.ownerDocument, root = nav.getRootNode(), win = doc.defaultView;
   const el = (t) => doc.createElement(t);
-  const attr = (k2) => nav.getAttribute("data-spy-" + k2);
+  const attr = (k2) => nav.getAttribute("data-chapter-" + k2);
   const css = (x) => win.getComputedStyle(x);
   let links = [], targets = [], passed = [], cur = -1, ready = 0, lock = 0, held = -1, heldAt = null;
   let io, list, sig, scroller = null, preset = null, forced, rail, band, k = -1, tail = 0, lastOff, labelled;
@@ -103,12 +103,12 @@ function spy(nav, o = {}) {
     return null;
   };
   const offset = () => num(attr("offset")) ?? num(o.offset) ?? (parseFloat(css(se()).scrollPaddingTop) || 0);
-  const label = (h) => h.getAttribute("data-spy-label") || [...h.childNodes].map((n) => n.nodeType == 1 && (n.getAttribute("aria-hidden") == "true" || n.matches('a[href^="#"]')) ? "" : n.textContent).join("").replace(/\s+/g, " ").trim() || h.textContent.replace(/\s+/g, " ").trim();
+  const label = (h) => h.getAttribute("data-chapter-label") || [...h.childNodes].map((n) => n.nodeType == 1 && (n.getAttribute("aria-hidden") == "true" || n.matches('a[href^="#"]')) ? "" : n.textContent).join("").replace(/\s+/g, " ").trim() || h.textContent.replace(/\s+/g, " ").trim();
   const build = () => {
     let s = attr("build") ?? o.build;
     if (s == null || s === false) return;
     s ||= root.querySelector("main,[role=main]") ? "main h2,main h3,[role=main] h2,[role=main] h3" : "h2,h3";
-    const hs = [...root.querySelectorAll(s)].filter((h) => !nav.contains(h) && !h.closest("[data-spy-ignore]") && label(h));
+    const hs = [...root.querySelectorAll(s)].filter((h) => !nav.contains(h) && !h.closest("[data-chapter-ignore]") && label(h));
     const next = hs.map((h) => h.localName + "" + h.id + "" + label(h)).join("");
     if (next == sig && list?.isConnected) return;
     quiet(() => {
@@ -193,11 +193,11 @@ function spy(nav, o = {}) {
     const top = n.top + nav.clientTop - nav.scrollTop, left = n.left + nav.clientLeft - nav.scrollLeft, r = a.getBoundingClientRect();
     if (nav.scrollHeight > nav.clientHeight + 1 && (r.top < n.top || r.bottom > n.bottom))
       nav.scrollTo({ top: r.top - top - (nav.clientHeight - r.height) / 2, behavior: E.motion.matches ? "instant" : "smooth" });
-    prop("spy-y", r.top - top + "px");
-    prop("spy-h", r.height + "px");
-    prop("spy-x", r.left - left + "px");
-    prop("spy-w", r.width + "px");
-    prop("spy-progress", links.length > 1 ? +(cur / (links.length - 1)).toFixed(4) : 1);
+    prop("chapter-y", r.top - top + "px");
+    prop("chapter-h", r.height + "px");
+    prop("chapter-x", r.left - left + "px");
+    prop("chapter-w", r.width + "px");
+    prop("chapter-progress", links.length > 1 ? +(cur / (links.length - 1)).toFixed(4) : 1);
     prop("_l", links.at(-1).getBoundingClientRect().bottom - top + "px");
   };
   const trail = (a) => {
@@ -220,7 +220,7 @@ function spy(nav, o = {}) {
     flag(0);
     flag(1, links[cur = i]);
     mark();
-    nav.dispatchEvent(new win.CustomEvent("spy:change", { bubbles: true, detail: { index: i, id: targets[i].id, link: links[i], target: targets[i], previous } }));
+    nav.dispatchEvent(new win.CustomEvent("chapter:change", { bubbles: true, detail: { index: i, id: targets[i].id, link: links[i], target: targets[i], previous } }));
   };
   const wanted = () => {
     const v = forced !== void 0 ? forced : attr("marker") ?? o.marker ?? defaults.marker;
@@ -232,11 +232,11 @@ function spy(nav, o = {}) {
       rail?.remove();
       band?.remove();
       rail = band = null;
-      return nav.removeAttribute("data-spy-on");
+      return nav.removeAttribute("data-chapter-on");
     }
     adopt(root);
-    nav.setAttribute("data-spy-on", p);
-    if (!rail) rail = el("spy-rail"), band = el("spy-band");
+    nav.setAttribute("data-chapter-on", p);
+    if (!rail) rail = el("chapter-rail"), band = el("chapter-band");
     rail.parentNode != nav && nav.append(rail, band);
     mark();
   };
@@ -278,7 +278,7 @@ function spy(nav, o = {}) {
   };
   const ro = new win.ResizeObserver(() => (measure(), pick(), mark()));
   const soft = () => {
-    if (!nav.isConnected || scanned.has(nav) && !nav.hasAttribute("data-spy")) return destroy2();
+    if (!nav.isConnected || scanned.has(nav) && !nav.hasAttribute("data-chapter")) return destroy2();
     build();
     const ol = links, ot = targets;
     collect();
@@ -346,7 +346,7 @@ function spy(nav, o = {}) {
   instances.add(api);
   if ((nav.localName == "nav" || nav.getAttribute("role") == "navigation") && !nav.hasAttribute("aria-label") && !nav.hasAttribute("aria-labelledby")) {
     const h = nav.querySelector("h1,h2,h3,h4,h5,h6");
-    if (h) h.id ||= "spy-label-" + ++uid, nav.setAttribute(labelled = "aria-labelledby", h.id);
+    if (h) h.id ||= "chapter-label-" + ++uid, nav.setAttribute(labelled = "aria-labelledby", h.id);
     else nav.setAttribute(labelled = "aria-label", "On this page");
   }
   nav.addEventListener("click", click);
@@ -372,7 +372,7 @@ function init(o = {}) {
     _o: opts,
     _scan() {
       for (const n of (opts.root || document).querySelectorAll(SEL))
-        if (!n[KEY] && !off.has(n)) scanned.add(n), spy(n, opts);
+        if (!n[KEY] && !off.has(n)) scanned.add(n), chapterjs(n, opts);
     }
   };
   (opts.observe ?? defaults.observe) && watch(document);

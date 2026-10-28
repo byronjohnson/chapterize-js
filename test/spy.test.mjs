@@ -49,7 +49,7 @@ test('builds a nested, labelled TOC with slug ids (accents kept, duplicates numb
   assert.equal(info.texts[8], 'Events', 'aria-hidden permalink "#" is not part of the label');
   assert.equal(info.label, 'On this page', 'automatic accessible name');
   assert.equal(info.manualLabel, 'Sections', 'an existing aria-label is kept');
-  assert.deepEqual(info.global, ['defaults', 'destroy', 'init', 'refresh', 'slug', 'spy', 'version']);
+  assert.deepEqual(info.global, ['chapterjs', 'defaults', 'destroy', 'init', 'refresh', 'slug', 'version']);
   assert.match(info.version, /^\d+\.\d+\.\d+/);
   assert.equal(await active(page, TOC), '#overview');
   assert.deepEqual(errors, []);
@@ -66,7 +66,7 @@ test('activation sweep: both navs match the oracle at every position (incl. shor
     await page.evaluate((y) => scrollTo({ top: y, behavior: 'instant' }), y);
     await settle(page, 50);
     for (const [sel, set] of [[TOC, BUILT], [MAN, MANUAL]]) {
-      // offset 64: data-spy-offset on #manual, html scroll-padding-top (the default) on #toc
+      // offset 64: data-chapter-offset on #manual, html scroll-padding-top (the default) on #toc
       const [a, o] = [await active(page, sel), await oracle(page, sel == TOC ? set : set, 64)];
       if (!o.includes(decodeURI(a)) && !o.includes(a)) bad.push(`${sel}@${y}: ${a} not in ${o}`);
     }
@@ -111,7 +111,7 @@ test('click: smooth scroll lands below the sticky header, holds the choice, upda
   const st = await page.evaluate(() => ({ hash: location.hash, focus: document.activeElement.id, ev: __events.filter((e) => e.startsWith('toc:')) }));
   assert.equal(st.hash, '#events');
   assert.equal(st.focus, 'events');
-  assert.deepEqual(st.ev, ['toc:events'], 'one spy:change, none for the sections scrolled past');
+  assert.deepEqual(st.ev, ['toc:events'], 'one chapter:change, none for the sections scrolled past');
   // a short section near the bottom cannot reach the line: it stays active after the scroll ends...
   // clicked right away: the first scroll's late scrollend must not release this click's hold (no flicker)
   await page.click(`${TOC} a[href="#short-a"]`);
@@ -135,7 +135,7 @@ test('click: smooth scroll lands below the sticky header, holds the choice, upda
 test('reduced motion: instant jumps (even with CSS scroll-behavior: smooth) and no marker transitions, live', async () => {
   const { page, ctx } = await t.open('/test/fixtures/basic.html');
   await until(page, () => document.querySelector('#toc a.is-active'));
-  const dur = () => page.$eval(TOC, (n) => getComputedStyle(n.querySelector('spy-rail'), '::after').transitionDuration);
+  const dur = () => page.$eval(TOC, (n) => getComputedStyle(n.querySelector('chapter-rail'), '::after').transitionDuration);
   assert.match(await dur(), /^0\.6s/);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.evaluate(() => document.documentElement.classList.add('smooth'));
@@ -153,13 +153,13 @@ test('reduced motion: instant jumps (even with CSS scroll-behavior: smooth) and 
 
 // geometry of the marker parts vs the active link
 const marker = (page, sel) => page.$eval(sel, (n) => {
-  const a = n.querySelector('a.is-active'), rail = n.querySelector(':scope > spy-rail'), band = n.querySelector(':scope > spy-band');
+  const a = n.querySelector('a.is-active'), rail = n.querySelector(':scope > chapter-rail'), band = n.querySelector(':scope > chapter-band');
   const ar = a.getBoundingClientRect(), box = (el, pseudo) => {
     const cs = getComputedStyle(el, pseudo), r = el.getBoundingClientRect(), [tx = 0, ty = 0] = cs.translate == 'none' ? [] : cs.translate.split(' ').map(parseFloat);
     return { top: r.top + (pseudo ? ty : 0), left: r.left, h: parseFloat(cs.height), w: parseFloat(cs.width), display: cs.display, shadow: cs.boxShadow, bg: cs.backgroundImage };
   };
-  return { a: { top: ar.top, left: ar.left, h: ar.height, w: ar.width }, line: box(rail, '::after'), rail: box(rail), band: box(band), on: n.getAttribute('data-spy-on'),
-    progress: n.style.getPropertyValue('--spy-progress'), trail: [...n.querySelectorAll('.is-trail')].map((x) => x.hash) };
+  return { a: { top: ar.top, left: ar.left, h: ar.height, w: ar.width }, line: box(rail, '::after'), rail: box(rail), band: box(band), on: n.getAttribute('data-chapter-on'),
+    progress: n.style.getPropertyValue('--chapter-progress'), trail: [...n.querySelectorAll('.is-trail')].map((x) => x.hash) };
 });
 
 test('marker presets: line (rail + glow + band), pill (gliding pill), minimal; trail and progress vars', async () => {
@@ -190,21 +190,21 @@ test('marker presets: line (rail + glow + band), pill (gliding pill), minimal; t
   m = await marker(page, MAN);
   assert.ok(Math.abs(m.band.left + 0 - m.a.left) < 1.5 || true);
   const pill = await page.$eval(MAN, (n) => {
-    const a = n.querySelector('.is-active').getBoundingClientRect(), b = n.querySelector('spy-band'), cs = getComputedStyle(b);
+    const a = n.querySelector('.is-active').getBoundingClientRect(), b = n.querySelector('chapter-band'), cs = getComputedStyle(b);
     const [x, y] = cs.translate.split(' ').map(parseFloat), nr = n.getBoundingClientRect();
     return { dx: nr.left + x - a.left, dy: nr.top + y - n.scrollTop - a.top };
   });
   assert.ok(Math.abs(pill.dx) < 1.5 && Math.abs(pill.dy) < 1.5, `nested pill aligned ${JSON.stringify(pill)}`);
   // switch presets live via the attribute (DOM watching) and the API
-  await page.$eval(TOC, (n) => n.setAttribute('data-spy-marker', 'minimal'));
-  await until(page, () => document.querySelector('#toc').getAttribute('data-spy-on') == 'minimal');
+  await page.$eval(TOC, (n) => n.setAttribute('data-chapter-marker', 'minimal'));
+  await until(page, () => document.querySelector('#toc').getAttribute('data-chapter-on') == 'minimal');
   m = await marker(page, TOC);
   assert.equal(m.band.display, 'none');
   assert.equal(m.line.shadow, 'none');
-  await page.$eval(TOC, (n) => Spy.spy(n).marker(false));
-  assert.equal(await page.$eval(TOC, (n) => n.hasAttribute('data-spy-on') || !!n.querySelector('spy-rail')), false);
-  await page.$eval(TOC, (n) => Spy.spy(n).marker('pill'));
-  assert.equal(await page.$eval(TOC, (n) => n.getAttribute('data-spy-on')), 'pill');
+  await page.$eval(TOC, (n) => Spy.chapterjs(n).marker(false));
+  assert.equal(await page.$eval(TOC, (n) => n.hasAttribute('data-chapter-on') || !!n.querySelector('chapter-rail')), false);
+  await page.$eval(TOC, (n) => Spy.chapterjs(n).marker('pill'));
+  assert.equal(await page.$eval(TOC, (n) => n.getAttribute('data-chapter-on')), 'pill');
   assert.deepEqual(errors, [], 'constructed stylesheet works under the strict CSP');
   await ctx.close();
 });
@@ -213,9 +213,9 @@ test('custom properties: timing and colours are configurable from CSS; unlayered
   const { page, ctx } = await t.open('/test/fixtures/basic.html');
   await until(page, () => document.querySelector('#toc a.is-active'));
   const r = await page.$eval(TOC, (n) => {
-    n.style.setProperty('--spy-duration', '0.2s');
-    n.style.setProperty('--spy-color', 'rgb(255, 0, 0)');
-    const after = getComputedStyle(n.querySelector('spy-rail'), '::after');
+    n.style.setProperty('--chapter-duration', '0.2s');
+    n.style.setProperty('--chapter-color', 'rgb(255, 0, 0)');
+    const after = getComputedStyle(n.querySelector('chapter-rail'), '::after');
     return { dur: after.transitionDuration, bg: after.backgroundImage };
   });
   assert.match(r.dur, /^0\.2s/);
@@ -223,18 +223,18 @@ test('custom properties: timing and colours are configurable from CSS; unlayered
   await ctx.close();
 });
 
-test('spy:change detail, API (init idempotent, spy() reuse, go, refresh, destroy), deep link to a generated id', async () => {
+test('chapter:change detail, API (init idempotent, chapterjs() reuse, go, refresh, destroy), deep link to a generated id', async () => {
   const { page, ctx, errors } = await t.open('/test/fixtures/basic.html');
   await until(page, () => document.querySelector('#toc a.is-active'));
   const r = await page.evaluate(async () => {
     const got = [];
     const nav = document.querySelector('#toc');
-    nav.addEventListener('spy:change', (e) => got.push({ ...e.detail, link: e.detail.link.hash, target: e.detail.target.id }));
+    nav.addEventListener('chapter:change', (e) => got.push({ ...e.detail, link: e.detail.link.hash, target: e.detail.target.id }));
     const c1 = Spy.init(), c2 = Spy.init();
-    const inst = Spy.spy(nav);
+    const inst = Spy.chapterjs(nav);
     inst.go('options', 'instant');
     await new Promise((r) => setTimeout(r, 100));
-    const out = { same: c1 === c2 && inst === Spy.spy(nav), count: c1.instances.length, got, id: inst.id, index: inst.index };
+    const out = { same: c1 === c2 && inst === Spy.chapterjs(nav), count: c1.instances.length, got, id: inst.id, index: inst.index };
     inst.refresh();
     inst.destroy();
     await new Promise((r) => setTimeout(r, 150)); // DOM watching must not revive a destroyed nav
@@ -247,7 +247,7 @@ test('spy:change detail, API (init idempotent, spy() reuse, go, refresh, destroy
   assert.equal(r.id, 'options');
   assert.equal(r.index, 5);
   assert.equal(r.after.html, '');
-  assert.deepEqual(r.after.attrs, ['data-spy', 'data-spy-build', 'data-spy-marker', 'id']);
+  assert.deepEqual(r.after.attrs, ['data-chapter', 'data-chapter-build', 'data-chapter-marker', 'id']);
   assert.equal(r.after.revived, false);
   assert.deepEqual(errors, []);
   // headings without ids get theirs from the library, so a #hash to them can only resolve after init

@@ -1,6 +1,6 @@
 // A tiny stand-in for a framework + router: it re-renders #view per route, re-renders navs, adds late
 // content, and intercepts its own links, the way React/Vue/Svelte apps do. The library is only init()-ed.
-import { init, spy, destroy } from '/dist/index.js';
+import { init, chapterjs, destroy } from '/dist/index.js';
 
 const lorem = 'Text for the section. '.repeat(70);
 const routes = {
@@ -23,7 +23,7 @@ document.addEventListener('click', (e) => {
 });
 
 window.app = {
-  render, manual, init, spy, destroy,
+  render, manual, init, chapterjs, destroy,
   route(name, hash = '') {
     history.pushState({ route: name }, '', location.pathname + hash);
     render(name);
@@ -33,7 +33,7 @@ window.app = {
   rerenderNav() {
     const old = document.getElementById('toc'), n = document.createElement('nav');
     n.id = 'toc';
-    for (const at of ['data-spy', 'data-spy-build', 'data-spy-marker']) n.setAttribute(at, old.getAttribute(at) ?? '');
+    for (const at of ['data-chapter', 'data-chapter-build', 'data-chapter-marker']) n.setAttribute(at, old.getAttribute(at) ?? '');
     old.replaceWith(n);
   },
   removeNav() { this.saved = document.getElementById('toc'); this.saved.remove(); },
@@ -41,8 +41,8 @@ window.app = {
   late() { view.insertAdjacentHTML('beforeend', `<h2>Late arrival</h2><p>${lorem}</p>`); },
   shadow() {
     const host = document.getElementById('host'), root = host.attachShadow({ mode: 'open' });
-    root.innerHTML = `<nav data-spy data-spy-build="h3" data-spy-marker="pill"></nav><section>${['Shadow one', 'Shadow two'].map((t) => `<h3>${t}</h3><p>${lorem}</p>`).join('')}</section>`;
-    return spy(root.querySelector('nav'), { build: 'h3' });
+    root.innerHTML = `<nav data-chapter data-chapter-build="h3" data-chapter-marker="pill"></nav><section>${['Shadow one', 'Shadow two'].map((t) => `<h3>${t}</h3><p>${lorem}</p>`).join('')}</section>`;
+    return chapterjs(root.querySelector('nav'), { build: 'h3' });
   },
 };
 render('a');

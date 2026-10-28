@@ -11,9 +11,9 @@ This is the library repo (`chapterize-js`); the website is the sibling repo `cha
 
 ## 1. Summary
 
-A zero-dependency library that turns `<nav data-spy data-spy-build>` into a nested table of contents built from
+A zero-dependency library that turns `<nav data-chapter data-chapter-build>` into a nested table of contents built from
 the page's existing headings (missing ids generated), highlights the section being read (`.is-active`,
-`aria-current="location"`, `spy:change`), scrolls correctly under sticky headers, and, opt-in, draws a gliding
+`aria-current="location"`, `chapter:change`), scrolls correctly under sticky headers, and, opt-in, draws a gliding
 marker. Positioning: **the accessible, attribute-only Tocbot alternative**. Gumshoe users (abandoned since 2019)
 are the easiest first audience: same "data attribute + nav" mental model, plus TOC generation.
 
@@ -27,14 +27,12 @@ HTML attributes, built-in accessibility, `llms.txt`, a distinctive one-page-plus
 **Chapterize JS**: npm package `chapterize-js` (package.json `name`, the import specifier), display name
 **Chapterize JS** (titles, prose, OG/meta), script-tag global **`Chapterize`**, repo placeholder
 `github.com/byronjohnson/chapterize-js`. Named 2026-10-23 (see the decisions log); the working name until then was
-`scrollspy`. The name is centralized (package.json + `scripts/brand.mjs`); see "Renaming" in `AGENTS.md`. Attribute, class, event, CSS-variable and
-layer names (`data-spy*`, `.is-active`, `spy:change`, `--spy-*`, `@layer spy`) do not depend on the name.
+`scrollspy`. The name is centralized (package.json + `scripts/brand.mjs`); see "Renaming" in `AGENTS.md`. The public names use `chapter`: attributes `data-chapter*`, custom properties `--chapter-*`, event `chapter:change`, layer `@layer chapter`, marker elements `chapter-rail` and `chapter-band`. The method that watches one nav is `chapterjs()`. Classes stay `.is-active` and `.is-trail`.
 
 ## 4. Goals
 
 1. **Simpler than Tocbot.** Attributes only, zero JS config, auto ids, works on markup you don't control.
-2. **Zero dependencies, small.** Core min+gzip < 5 KB soft limit. Now: `index.min.js` 5,022 B (≈4.28 KB without the
-   2.1 KB raw / ≈0.74 KB gzip inlined marker CSS), `global.min.js` 5,319 B (2026-10-23, after the rename: the longer banner costs 5–6 B).
+2. **Zero dependencies, small.** Core min+gzip < 5 KB soft limit. Now: `index.min.js` 5,037 B, `global.min.js` 5,333 B (`npm run build`, 2026-10-28). The earlier split (≈4.28 KB without the 2.1 KB raw / ≈0.74 KB gzip inlined marker CSS) was measured 2026-10-23 and was not remeasured.
 3. **The most beautiful TOC.** Built-in, opt-in gliding marker with three presets (`line`, `pill`, `minimal`),
    themed entirely with CSS custom properties; transitions only under `prefers-reduced-motion: no-preference`.
 4. **Accessibility first.** `aria-current="location"`, automatic `aria-label` / `aria-labelledby`, focus moves to
@@ -70,7 +68,7 @@ layer names (`data-spy*`, `.is-active`, `spy:change`, `--spy-*`, `@layer spy`) d
 - Read the DOM, don't own it: generate only the `<ol>` inside the nav; restore everything on `destroy()`.
 - One IntersectionObserver per nav, rootMargin puts the activation line at offset + 25% of the viewport.
 - CSP-safe by construction: CSSOM only (`adoptedStyleSheets`, `style.setProperty`).
-- `@layer spy` so any author rule wins; every visual is a custom property.
+- `@layer chapter` so any author rule wins; every visual is a custom property.
 - Each modern feature has a fallback; the fallback must still be correct, just less fancy.
 
 ## 8. Site goals
@@ -139,6 +137,11 @@ images or webfonts.
   Test count 27 → 29 (library 18: the docs-accuracy checks for README/llms/types became their own library test; site 11:
   + a vendor drift test).
 
+### 2026-10-28
+
+- **Attributes and CSS variables renamed from `spy` to `chapter`** (Byron). `data-spy*` is now `data-chapter*` (`data-chapter`, `data-chapter-build`, `data-chapter-marker`, `data-chapter-offset`, `data-chapter-hash`, `data-chapter-label`, `data-chapter-ignore`, and the runtime `data-chapter-on`). `--spy-*` is now `--chapter-*`. This supersedes the 2026-10-23 decision that those names stayed `spy` because they described behavior.
+- **The rest of the `spy` names renamed the same day** (Byron). `spy()` is now `chapterjs()`. `spy:change` is `chapter:change`. `@layer spy` is `@layer chapter`. `<spy-rail>` and `<spy-band>` are `<chapter-rail>` and `<chapter-band>`. Exported types are `ChapterOptions`, `ChapterInstance`, `ChapterController`, `ChapterMarker`, and `ChapterChangeDetail`. Unchanged: `.is-active` / `.is-trail`, and the category words "scroll spy" / `scroll-spy` in the package description and keywords.
+
 ## 11. Open questions for Byron
 
 1. Domain / `SITE_URL` (default `https://chapterize-js.vercel.app`, derived from the npm name, until a domain is chosen).
@@ -151,5 +154,5 @@ images or webfonts.
 
 - IntersectionObserver has no fallback (every supported browser has it).
 - WebKit: if reduced motion is switched on mid-glide, the running transition finishes (new moves are instant).
-- Navs/headings inside a shadow root: use `spy(nav)` and call `refresh()` after changes (the MutationObserver watches the document, not shadow trees).
+- Navs/headings inside a shadow root: use `chapterjs(nav)` and call `refresh()` after changes (the MutationObserver watches the document, not shadow trees).
 - No `scrollend` (older Safari): the click hold ends after a 3 s timer or on reader input.

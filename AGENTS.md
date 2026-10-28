@@ -8,9 +8,9 @@ Onboarding for AI agents (Cursor, Codex, Claude Code, etc.). Short on purpose; t
 ## What it is
 
 A zero-dependency table-of-contents + scrollspy library by Byron Johnson. One attribute on a `<nav>`
-(`data-spy`, `data-spy-build`, `data-spy-marker`) builds a nested outline from the page's headings (ids generated),
+(`data-chapter`, `data-chapter-build`, `data-chapter-marker`) builds a nested outline from the page's headings (ids generated),
 tracks the section being read with IntersectionObserver, marks it with `.is-active` + `aria-current="location"`,
-and optionally draws a gliding marker from a constructed stylesheet (CSP-safe, `@layer spy`).
+and optionally draws a gliding marker from a constructed stylesheet (CSP-safe, `@layer chapter`).
 Positioning: **the accessible, attribute-only Tocbot alternative** (Gumshoe users are the easy first audience).
 Name: **Chapterize JS** (npm `chapterize-js`, script-tag global `Chapterize`; named 2026-10-23, see the decisions log).
 v0.1.0, **unpublished**, no git repo yet (Byron does git).
@@ -19,7 +19,7 @@ The npm `files` allowlist is `dist` + `types` only (Byron: no docs files in the 
 ## Goals (never regress one to help another)
 
 1. **Simpler than Tocbot:** attributes only, zero JS config, auto ids, works on any existing page.
-2. **Tiny, zero deps:** core `dist/index.min.js` < **5 KB gzip soft limit** (now 5,022 B with the `chapterize-js` banner; ≈4.28 KB without the inlined marker CSS). Report the number on every `src/` change.
+2. **Tiny, zero deps:** core `dist/index.min.js` < **5 KB gzip soft limit** (now 5,037 B with the `chapterize-js` banner, `npm run build` on 2026-10-28; ≈4.28 KB without the inlined marker CSS was last measured 2026-10-23). Report the number on every `src/` change.
 3. **Most beautiful:** the built-in, opt-in gliding marker (`line` | `pill` | `minimal`).
 4. **Accessibility first:** `aria-current`, auto `aria-label`, focus moves to the section, reduced motion = instant.
 5. **Correct where others break:** last + short final sections, sticky offsets, first click, CSS `scroll-behavior: smooth`, hash routers.
@@ -79,7 +79,7 @@ Generated, never edit: `dist/`. The site guide (pages, clean URLs, Vercel) is `d
 - Importing never touches `window`/`document`; `init()` on the server is a no-op; `slug()` works on the server.
 - CSP: the library never injects `<style>` or `style=""` strings; styles go through CSSOM (`adoptedStyleSheets`,
   `style.setProperty`). The site (in `chapterize-js-site`) runs under `script-src 'self'; style-src 'self'`.
-- `data-spy*` attributes, `.is-active` / `.is-trail`, `spy:change`, `--spy-*` variables and `@layer spy` are
+- `data-chapter*` attributes, `.is-active` / `.is-trail`, `chapter:change`, `--chapter-*` variables and `@layer chapter` are
   independent of the project name and frozen unless Byron says otherwise.
 - Every modern feature has a fallback (see README "Browser support"); never require one that isn't in all three engines.
 - API change ⇒ update `src/`, `types/`, README, `llms.txt` and tests here (`test/docs.test.mjs` checks drift), then the

@@ -3,7 +3,7 @@
 **The accessible, attribute-only table of contents.** One attribute turns the headings already on your page into a live outline: it builds the list, gives headings ids, highlights the section being read and glides a marker between links. Zero dependencies, about 5 KB gzip, works in every framework and on plain sites.
 
 ```html
-<nav data-spy data-spy-build data-spy-marker></nav>
+<nav data-chapter data-chapter-build data-chapter-marker></nav>
 <script src="https://unpkg.com/chapterize-js" defer></script>
 ```
 
@@ -11,7 +11,7 @@
 - **Accessible first.** `aria-current="location"`, an automatic landmark name, focus follows clicks, reduced motion is honoured live (even over CSS `scroll-behavior: smooth`).
 - **Correct at the edges.** Short final sections each get a turn, the last section wins at the bottom, the first click lands below sticky headers, a smooth scroll does not flicker through the sections it passes.
 - **Framework-proof.** It watches the DOM: client-side routes, re-rendered headings and late content just work. Importing it on the server is a no-op.
-- **Beautiful by default, opt-in.** `data-spy-marker` draws a gliding line, a pill or a minimal marker from a CSP-safe constructed stylesheet in `@layer spy`.
+- **Beautiful by default, opt-in.** `data-chapter-marker` draws a gliding line, a pill or a minimal marker from a CSP-safe constructed stylesheet in `@layer chapter`.
 
 ## Install
 
@@ -20,14 +20,14 @@ npm install chapterize-js
 ```
 
 ```js
-import 'chapterize-js/auto'; // spies every [data-spy] nav, now and later
+import 'chapterize-js/auto'; // spies every [data-chapter] nav, now and later
 ```
 
 Or with no build step: `<script src="https://unpkg.com/chapterize-js" defer></script>` registers a global `Chapterize` and initialises when the DOM is ready. Add `data-manual` to the script tag to call `Chapterize.init()` yourself.
 
 | Entry | File | Use |
 | --- | --- | --- |
-| `chapterize-js` | `dist/index.js` (ESM), `dist/index.cjs` | `init`, `spy`, `refresh`, `destroy`, `slug`, no side effects |
+| `chapterize-js` | `dist/index.js` (ESM), `dist/index.cjs` | `init`, `chapterjs`, `refresh`, `destroy`, `slug`, no side effects |
 | `chapterize-js/auto` | `dist/auto.js` | calls `init()` on import (no-op on the server) |
 | `chapterize-js/global` | `dist/global.min.js` | script tag, global `Chapterize`, auto-init |
 
@@ -35,23 +35,23 @@ Or with no build step: `<script src="https://unpkg.com/chapterize-js" defer></sc
 
 | Attribute | On | Meaning |
 | --- | --- | --- |
-| `data-spy` | nav | Spy this element's same-page links. Required. |
-| `data-spy-build` | nav | Build a nested `<ol>` from headings. Empty = `main h2, main h3`; a value = your selector. |
-| `data-spy-marker` | nav | Built-in marker: `line` (default), `pill`, `minimal`. |
-| `data-spy-offset` | nav | Pixels hidden by a sticky header. Default: the scroller's `scroll-padding-top`. |
-| `data-spy-hash="false"` | nav | Don't write `#id` on click. Hash routers (`#/…`, `#!…`) are left alone automatically. |
-| `data-spy-label` | heading | Outline text for this heading. |
-| `data-spy-ignore` | heading or container | Keep out of the built outline. |
+| `data-chapter` | nav | Spy this element's same-page links. Required. |
+| `data-chapter-build` | nav | Build a nested `<ol>` from headings. Empty = `main h2, main h3`; a value = your selector. |
+| `data-chapter-marker` | nav | Built-in marker: `line` (default), `pill`, `minimal`. |
+| `data-chapter-offset` | nav | Pixels hidden by a sticky header. Default: the scroller's `scroll-padding-top`. |
+| `data-chapter-hash="false"` | nav | Don't write `#id` on click. Hash routers (`#/…`, `#!…`) are left alone automatically. |
+| `data-chapter-label` | heading | Outline text for this heading. |
+| `data-chapter-ignore` | heading or container | Keep out of the built outline. |
 
 Attributes are live: change one and the nav updates.
 
 ## JavaScript
 
 ```js
-import { init, spy, refresh, destroy, slug } from 'chapterize-js';
+import { init, chapterjs, refresh, destroy, slug } from 'chapterize-js';
 
-const toc = init();                  // every [data-spy] nav, now and later; idempotent
-const one = spy(nav, { build: 'article h2', marker: 'pill', offset: 64, hash: false });
+const toc = init();                  // every [data-chapter] nav, now and later; idempotent
+const one = chapterjs(nav, { build: 'article h2', marker: 'pill', offset: 64, hash: false });
 one.index; one.id; one.links; one.targets;
 one.go('install');                   // scroll to a section by id or index
 one.marker('minimal');               // switch presets; false removes it
@@ -66,27 +66,27 @@ Options mirror the attributes (attributes win): `build`, `offset`, `marker`, `ha
 ### Events
 
 ```js
-document.addEventListener('spy:change', (e) => {
+document.addEventListener('chapter:change', (e) => {
   const { index, id, link, target, previous } = e.detail;
 });
 ```
 
 ## The marker
 
-`data-spy-marker` draws a faint rail, a fill up to the active link, a glowing line that eases between links and a soft band behind the active row. `pill` glides a rounded highlight behind the link instead; `minimal` is just the line.
+`data-chapter-marker` draws a faint rail, a fill up to the active link, a glowing line that eases between links and a soft band behind the active row. `pill` glides a rounded highlight behind the link instead; `minimal` is just the line.
 
-Every visual reads a custom property on the nav: `--spy-color`, `--spy-color-2`, `--spy-width`, `--spy-duration` (`.6s`), `--spy-ease`, `--spy-indent`, `--spy-rail`, `--spy-glow`, `--spy-band`, `--spy-radius`. The styles sit in `@layer spy`, so any rule you write wins.
+Every visual reads a custom property on the nav: `--chapter-color`, `--chapter-color-2`, `--chapter-width`, `--chapter-duration` (`.6s`), `--chapter-ease`, `--chapter-indent`, `--chapter-rail`, `--chapter-glow`, `--chapter-band`, `--chapter-radius`. The styles sit in `@layer chapter`, so any rule you write wins.
 
-Drawing your own? Leave the attribute off. The nav still gets `--spy-y`, `--spy-h`, `--spy-x`, `--spy-w` (the active link's box) and `--spy-progress` (0 to 1); the active link gets `.is-active` and `aria-current="location"`, its parent entries `.is-trail`.
+Drawing your own? Leave the attribute off. The nav still gets `--chapter-y`, `--chapter-h`, `--chapter-x`, `--chapter-w` (the active link's box) and `--chapter-progress` (0 to 1); the active link gets `.is-active` and `aria-current="location"`, its parent entries `.is-trail`.
 
 ## Frameworks
 
-Chapterize JS is plain DOM, so the recipe is the same everywhere: render a nav with `data-spy`, and call `init()` once on the client after the first render. `init()` is idempotent and keeps watching the DOM, so route changes, re-rendered headings and navs that mount later are picked up without more code. When a nav leaves the DOM its instance is destroyed for you.
+Chapterize JS is plain DOM, so the recipe is the same everywhere: render a nav with `data-chapter`, and call `init()` once on the client after the first render. `init()` is idempotent and keeps watching the DOM, so route changes, re-rendered headings and navs that mount later are picked up without more code. When a nav leaves the DOM its instance is destroyed for you.
 
 ### Plain HTML
 
 ```html
-<nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>
+<nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>
 <article>…</article>
 <script src="https://unpkg.com/chapterize-js" defer></script>
 ```
@@ -101,7 +101,7 @@ import { init } from 'chapterize-js';
 
 export function Toc() {
   useEffect(() => { init(); }, []);
-  return <nav data-spy data-spy-build="article h2, article h3" data-spy-marker />;
+  return <nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker />;
 }
 ```
 
@@ -109,26 +109,26 @@ export function Toc() {
 
 App Router: put the nav in any Server Component and render one small Client Component that calls `init()`, once, in a layout. Pages stay static, the nav ships no JavaScript of its own, and on client-side navigation (`next/link`) the DOM watching rebuilds the outline from the new page.
 
-```tsx app/spy-init.tsx
+```tsx app/chapter-init.tsx
 'use client';
 import { useEffect } from 'react';
 import { init } from 'chapterize-js';
 
-export default function SpyInit() {
+export default function ChapterInit() {
   useEffect(() => { init(); }, []);
   return null;
 }
 ```
 
 ```tsx app/layout.tsx
-import SpyInit from './spy-init';
+import ChapterInit from './chapter-init';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
         {children}
-        <SpyInit />
+        <ChapterInit />
       </body>
     </html>
   );
@@ -139,7 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 export default function Page() {
   return (
     <>
-      <nav data-spy data-spy-build="article h2, article h3" data-spy-marker />
+      <nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker />
       <article>{/* headings and content */}</article>
     </>
   );
@@ -156,7 +156,7 @@ onMounted(() => init());
 </script>
 
 <template>
-  <nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>
+  <nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>
 </template>
 ```
 
@@ -181,7 +181,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   onMount(() => init());
 </script>
 
-<nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>
+<nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>
 ```
 
 ### Angular
@@ -194,7 +194,7 @@ import { init } from 'chapterize-js';
 
 @Component({
   selector: 'app-toc',
-  template: `<nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>`,
+  template: `<nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>`,
 })
 export class TocComponent {
   constructor() { afterNextRender(() => init()); }
@@ -206,7 +206,7 @@ export class TocComponent {
 A bundled script runs once per page; with `<ClientRouter />` the DOM watching follows each swap.
 
 ```astro
-<nav data-spy data-spy-build="article h2, article h3" data-spy-marker></nav>
+<nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>
 <script>
   import 'chapterize-js/auto';
 </script>
@@ -220,7 +220,7 @@ import { init } from 'chapterize-js';
 
 export function Toc() {
   onMount(() => init());
-  return <nav data-spy data-spy-build="article h2, article h3" data-spy-marker />;
+  return <nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker />;
 }
 ```
 
@@ -235,7 +235,7 @@ add_action('wp_enqueue_scripts', function () {
 ```
 
 ```html
-<nav data-spy data-spy-build=".entry-content h2, .wp-block-post-content h2" data-spy-marker></nav>
+<nav data-chapter data-chapter-build=".entry-content h2, .wp-block-post-content h2" data-chapter-marker></nav>
 ```
 
 ### Hugo
@@ -243,8 +243,8 @@ add_action('wp_enqueue_scripts', function () {
 Hugo's headings already have ids, which are kept. Build the outline, or spy Hugo's own `.TableOfContents`.
 
 ```html
-<nav data-spy data-spy-build=".content h2, .content h3" data-spy-marker></nav>
-<!-- or: <div data-spy data-spy-marker>{{ .TableOfContents }}</div> -->
+<nav data-chapter data-chapter-build=".content h2, .content h3" data-chapter-marker></nav>
+<!-- or: <div data-chapter data-chapter-marker>{{ .TableOfContents }}</div> -->
 <script src="https://unpkg.com/chapterize-js" defer></script>
 ```
 
@@ -253,7 +253,7 @@ Hugo's headings already have ids, which are kept. Build the outline, or spy Hugo
 In the layout that wraps your Markdown:
 
 ```html
-<nav data-spy data-spy-build="main h2, main h3" data-spy-marker></nav>
+<nav data-chapter data-chapter-build="main h2, main h3" data-chapter-marker></nav>
 <main>{{ content | safe }}</main>
 <script src="https://unpkg.com/chapterize-js" defer></script>
 ```
@@ -271,7 +271,7 @@ toc:
 
 ```html
 {{ attach_library('mytheme/toc') }}
-<nav data-spy data-spy-build=".node__content h2, .node__content h3" data-spy-marker></nav>
+<nav data-chapter data-chapter-build=".node__content h2, .node__content h3" data-chapter-marker></nav>
 ```
 
 ## Browser support
@@ -283,7 +283,7 @@ Current Chrome, Edge, Firefox and Safari (Safari 16.4+). Modern features are use
 | IntersectionObserver | section crossings, no scroll polling | required (every supported browser has it) |
 | `scrollend` | ending a click's hold exactly | a 3 s timer, then the hold ends at the next real scroll |
 | constructed stylesheets + `@layer` | CSP-safe marker styles that your CSS overrides | the list still spies, without the marker |
-| scroll-driven animations | (site only) the header progress bar | `--spy-progress` / `spy:change` |
+| scroll-driven animations | (site only) the header progress bar | `--chapter-progress` / `chapter:change` |
 | native `scroll-target-group` | not used yet: Chromium-only, see docs/ROADMAP.md | n/a |
 
 ## Accessibility

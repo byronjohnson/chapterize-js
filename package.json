@@ -3,7 +3,7 @@
   "displayName": "Chapterize JS",
   "globalName": "Chapterize",
   "version": "0.1.0",
-  "description": "Automatic, accessible table of contents and scroll spy for any page: add data-spy to a nav and it builds the links, highlights the current section and glides a marker. Zero dependencies, zero JS config, works in every framework.",
+  "description": "Automatic, accessible table of contents and scroll spy for any page: add data-chapter to a nav and it builds the links, highlights the current section and glides a marker. Zero dependencies, zero JS config, works in every framework.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

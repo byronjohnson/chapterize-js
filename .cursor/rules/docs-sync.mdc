@@ -11,7 +11,7 @@ When an attribute, option, method, event, CSS variable, preset or default change
 `llms.txt` · tests here · and in the sibling repo `../chapterize-js-site`: `site/pages/index.html` (attributes, API),
 `site/pages/markers.html` (CSS variables), then its `npm test` (re-syncs `vendor/chapterize-js/`; commit that too).
 
-`test/docs.test.mjs` fails if a `data-spy-*` attribute read in `src/`, a `--spy-*` variable in `marker.css` or a runtime
+`test/docs.test.mjs` fails if a `data-chapter-*` attribute read in `src/`, a `--chapter-*` variable in `marker.css` or a runtime
 export is missing from README, `llms.txt` or `types/`; the site repo's `test/site.test.mjs` ("site docs accuracy") does
 the same for its pages, reading this checkout. The README `## Frameworks` section is the single source for the site's `/frameworks`. Its Next.js recipe was verified in a real Next 16 app (2026-10-23): change it only with a re-check in a Next app.
 Sizes in README/AGENTS/PROJECT-GOALS are measured numbers: re-measure with `npm run size`, don't guess.

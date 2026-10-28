@@ -1,74 +1,74 @@
-/* Built-in marker styles. Opt-in (data-spy-marker or { marker }), adopted as a constructed stylesheet
-   (CSSOM, so it is CSP-safe: no <style> tag, no style attribute). Everything sits in @layer spy, so any
-   unlayered developer CSS wins, and every visual reads a --spy-* custom property.
+/* Built-in marker styles. Opt-in (data-chapter-marker or { marker }), adopted as a constructed stylesheet
+   (CSSOM, so it is CSP-safe: no <style> tag, no style attribute). Everything sits in @layer chapter, so any
+   unlayered developer CSS wins, and every visual reads a --chapter-* custom property.
    Transitions exist only under prefers-reduced-motion: no-preference, so the OS setting applies live.
    The build minifies this file and inlines it as a string. */
-@layer spy {
-  [data-spy-on] {
-    --_c: var(--spy-color, #8b7cf6);
-    --_c2: var(--spy-color-2, var(--_c));
-    --_w: var(--spy-width, 2px);
-    --_t: var(--spy-duration, .6s) var(--spy-ease, cubic-bezier(.16, 1, .3, 1));
+@layer chapter {
+  [data-chapter-on] {
+    --_c: var(--chapter-color, #8b7cf6);
+    --_c2: var(--chapter-color-2, var(--_c));
+    --_w: var(--chapter-width, 2px);
+    --_t: var(--chapter-duration, .6s) var(--chapter-ease, cubic-bezier(.16, 1, .3, 1));
     position: relative;
     isolation: isolate;
     padding-left: calc(var(--_w) + 1em);
   }
-  [data-spy-on] :is(ol, ul) { list-style: none; margin: 0; padding: 0 }
-  [data-spy-on] li li { padding-left: var(--spy-indent, 1em) }
-  [data-spy-on] li li a { font-size: .94em }
-  [data-spy-on] a { display: block; padding: .3em 0; color: inherit; text-decoration: none; opacity: .62 }
-  [data-spy-on] :is(a:hover, .is-trail) { opacity: .85 }
-  [data-spy-on] .is-active { opacity: 1 }
+  [data-chapter-on] :is(ol, ul) { list-style: none; margin: 0; padding: 0 }
+  [data-chapter-on] li li { padding-left: var(--chapter-indent, 1em) }
+  [data-chapter-on] li li a { font-size: .94em }
+  [data-chapter-on] a { display: block; padding: .3em 0; color: inherit; text-decoration: none; opacity: .62 }
+  [data-chapter-on] :is(a:hover, .is-trail) { opacity: .85 }
+  [data-chapter-on] .is-active { opacity: 1 }
 
   /* line (default): rail = track + fill (two background layers), :after = the glowing line,
-     <spy-band> = a soft highlight behind the active row */
-  spy-rail, spy-band { position: absolute; left: 0; top: 0; pointer-events: none }
-  spy-rail {
+     <chapter-band> = a soft highlight behind the active row */
+  chapter-rail, chapter-band { position: absolute; left: 0; top: 0; pointer-events: none }
+  chapter-rail {
     width: var(--_w);
     height: var(--_l);
     background:
-      linear-gradient(#0000, color-mix(in srgb, var(--_c) 70%, #0000)) 50% 0 / 1px calc(var(--spy-y) + var(--spy-h)) no-repeat,
-      linear-gradient(var(--spy-rail, color-mix(in srgb, currentColor 16%, #0000)) 0 0) 50% 0 / 1px 100% no-repeat;
+      linear-gradient(#0000, color-mix(in srgb, var(--_c) 70%, #0000)) 50% 0 / 1px calc(var(--chapter-y) + var(--chapter-h)) no-repeat,
+      linear-gradient(var(--chapter-rail, color-mix(in srgb, currentColor 16%, #0000)) 0 0) 50% 0 / 1px 100% no-repeat;
   }
-  spy-rail::after {
+  chapter-rail::after {
     content: "";
     position: absolute;
     inset: 0 0 auto;
-    height: var(--spy-h);
-    translate: 0 var(--spy-y);
+    height: var(--chapter-h);
+    translate: 0 var(--chapter-y);
     border-radius: 9px;
     background: linear-gradient(var(--_c), var(--_c2));
-    box-shadow: var(--spy-glow, 0 0 12px color-mix(in srgb, var(--_c) 80%, #0000));
+    box-shadow: var(--chapter-glow, 0 0 12px color-mix(in srgb, var(--_c) 80%, #0000));
   }
-  spy-band {
+  chapter-band {
     z-index: -1;
     right: 0;
-    height: var(--spy-h);
-    translate: 0 var(--spy-y);
+    height: var(--chapter-h);
+    translate: 0 var(--chapter-y);
     border-radius: 0 .5em .5em 0;
-    background: var(--spy-band, linear-gradient(90deg, color-mix(in srgb, var(--_c) 15%, #0000), #0000 80%));
+    background: var(--chapter-band, linear-gradient(90deg, color-mix(in srgb, var(--_c) 15%, #0000), #0000 80%));
   }
 
   /* pill: a rounded highlight glides behind the active link, no rail */
-  [data-spy-on=pill] { padding-left: 0 }
-  [data-spy-on=pill] a { padding: .35em .75em }
-  [data-spy-on=pill] spy-rail { display: none }
-  [data-spy-on=pill] spy-band {
-    width: var(--spy-w);
-    translate: var(--spy-x) var(--spy-y);
-    border-radius: var(--spy-radius, .55em);
-    background: var(--spy-band, color-mix(in srgb, var(--_c) 14%, #0000));
+  [data-chapter-on=pill] { padding-left: 0 }
+  [data-chapter-on=pill] a { padding: .35em .75em }
+  [data-chapter-on=pill] chapter-rail { display: none }
+  [data-chapter-on=pill] chapter-band {
+    width: var(--chapter-w);
+    translate: var(--chapter-x) var(--chapter-y);
+    border-radius: var(--chapter-radius, .55em);
+    background: var(--chapter-band, color-mix(in srgb, var(--_c) 14%, #0000));
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_c) 26%, #0000);
   }
 
   /* minimal: just the line, no track, no glow, no band */
-  [data-spy-on=minimal] spy-band { display: none }
-  [data-spy-on=minimal] spy-rail { background: none }
-  [data-spy-on=minimal] spy-rail::after { box-shadow: none; background: var(--_c) }
+  [data-chapter-on=minimal] chapter-band { display: none }
+  [data-chapter-on=minimal] chapter-rail { background: none }
+  [data-chapter-on=minimal] chapter-rail::after { box-shadow: none; background: var(--_c) }
 
   @media (prefers-reduced-motion: no-preference) {
-    [data-spy-on] a { transition: opacity .25s }
-    spy-rail { transition: background-size var(--_t) }
-    spy-rail::after, spy-band { transition: translate var(--_t), height var(--_t), width var(--_t) }
+    [data-chapter-on] a { transition: opacity .25s }
+    chapter-rail { transition: background-size var(--_t) }
+    chapter-rail::after, chapter-band { transition: translate var(--_t), height var(--_t), width var(--_t) }
   }
 }

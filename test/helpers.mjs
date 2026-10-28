@@ -26,7 +26,7 @@ export async function setup() {
     await page.addInitScript(() => {
       addEventListener('securitypolicyviolation', (e) => console.error('CSP violation: ' + e.violatedDirective + ' ' + e.blockedURI));
       window.__events = [];
-      addEventListener('spy:change', (e) => __events.push(e.target.id + ':' + e.detail.id));
+      addEventListener('chapter:change', (e) => __events.push(e.target.id + ':' + e.detail.id));
     });
     const res = await page.goto(base + path);
     return { page, ctx, errors, res };

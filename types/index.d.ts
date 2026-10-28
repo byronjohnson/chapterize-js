@@ -1,29 +1,29 @@
-// Types for the core module. Attributes (data-spy, data-spy-build, data-spy-marker, data-spy-offset,
-// data-spy-hash, data-spy-label, data-spy-ignore) always win over these options.
+// Types for the core module. Attributes (data-chapter, data-chapter-build, data-chapter-marker, data-chapter-offset,
+// data-chapter-hash, data-chapter-label, data-chapter-ignore) always win over these options.
 
 /** Marker preset: `true` = "line". `false` = no marker. */
-export type SpyMarker = boolean | 'line' | 'pill' | 'minimal';
+export type ChapterMarker = boolean | 'line' | 'pill' | 'minimal';
 
-export interface SpyOptions {
-  /** Heading selector to build the list from (same as data-spy-build). `''` = `main h2, main h3`. */
+export interface ChapterOptions {
+  /** Heading selector to build the list from (same as data-chapter-build). `''` = `main h2, main h3`. */
   build?: string;
   /** Pixels between the viewport top and a section's "reading line" (sticky headers).
-   *  Default: data-spy-offset, else the scroller's CSS `scroll-padding-top`, else 0. */
+   *  Default: data-chapter-offset, else the scroller's CSS `scroll-padding-top`, else 0. */
   offset?: number;
   /** Draw the built-in gliding marker. Default `false` (opt-in). */
-  marker?: SpyMarker;
+  marker?: ChapterMarker;
   /** Write `#id` to the URL on click (pushState). Default `true`. Skipped for hash routers (`#/`, `#!`). */
   hash?: boolean;
   /** Watch the DOM (SPA routes, re-renders, late content). Default `true`. */
   observe?: boolean;
 }
 
-export interface InitOptions extends SpyOptions {
-  /** Where to look for `[data-spy]` navs. Default `document`. */
+export interface InitOptions extends ChapterOptions {
+  /** Where to look for `[data-chapter]` navs. Default `document`. */
   root?: Document | Element | ShadowRoot;
 }
 
-export interface SpyInstance {
+export interface ChapterInstance {
   readonly nav: HTMLElement;
   readonly links: HTMLAnchorElement[];
   readonly targets: HTMLElement[];
@@ -36,18 +36,18 @@ export interface SpyInstance {
   /** Rebuild, re-collect and re-measure this nav. */
   refresh(): void;
   /** Switch the marker preset at runtime (`false` removes it). */
-  marker(preset?: SpyMarker): void;
-  /** Stop spying this nav and undo everything the library added. */
+  marker(preset?: ChapterMarker): void;
+  /** Stop watching this nav and undo everything the library added. */
   destroy(): void;
 }
 
-export interface SpyController {
-  readonly instances: SpyInstance[];
+export interface ChapterController {
+  readonly instances: ChapterInstance[];
   refresh(): void;
   destroy(): void;
 }
 
-export interface SpyChangeDetail {
+export interface ChapterChangeDetail {
   index: number;
   id: string;
   link: HTMLAnchorElement;
@@ -57,24 +57,24 @@ export interface SpyChangeDetail {
 }
 
 export const version: string;
-export const defaults: { marker: SpyMarker; hash: boolean; observe: boolean };
+export const defaults: { marker: ChapterMarker; hash: boolean; observe: boolean };
 /** The slug used for generated ids (accents kept, de-duplicated against `root`). */
 export function slug(text: string, root?: Document | ShadowRoot): string;
-/** Spy one nav element. Returns the existing instance on repeated calls. */
-export function spy(nav: HTMLElement, options?: SpyOptions): SpyInstance;
-/** Spy every `[data-spy]` nav and keep watching the DOM. Idempotent; a no-op on the server. */
-export function init(options?: InitOptions): SpyController;
+/** Watch one nav element. Returns the existing instance on repeated calls. */
+export function chapterjs(nav: HTMLElement, options?: ChapterOptions): ChapterInstance;
+/** Watch every `[data-chapter]` nav and keep watching the DOM. Idempotent; a no-op on the server. */
+export function init(options?: InitOptions): ChapterController;
 export function refresh(): void;
 export function destroy(): void;
 
 declare global {
   interface HTMLElementEventMap {
-    'spy:change': CustomEvent<SpyChangeDetail>;
+    'chapter:change': CustomEvent<ChapterChangeDetail>;
   }
   interface DocumentEventMap {
-    'spy:change': CustomEvent<SpyChangeDetail>;
+    'chapter:change': CustomEvent<ChapterChangeDetail>;
   }
   interface WindowEventMap {
-    'spy:change': CustomEvent<SpyChangeDetail>;
+    'chapter:change': CustomEvent<ChapterChangeDetail>;
   }
 }

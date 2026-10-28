@@ -14,7 +14,7 @@ alwaysApply: false
 - **Clicks:** gap = max(offset, `scroll-margin-top`, `scroll-padding-top`); `instant` under reduced motion; the clicked item is held
   until the `scrollend` that lands on the destination (3 s cap), then until the position moves ≥3px; wheel/touch/keys release it.
 - **DOM watching:** one MutationObserver on `documentElement`, 40 ms debounce, soft refresh; the library's own writes run inside
-  `quiet()` so they never retrigger it. Removing a nav (or its `data-spy`) destroys its instance.
+  `quiet()` so they never retrigger it. Removing a nav (or its `data-chapter`) destroys its instance.
 - **Destroy restores everything:** generated list, generated ids, `tabindex`, labels, classes, CSS vars, marker elements, listeners.
 - **Size:** report `npm run size` before/after. Every byte must earn its place; core min+gzip < 5 KB soft limit.
 - **Types:** update `types/index.d.ts` with any API change; `npm run test:types`; JSDoc defaults must match `defaults`.

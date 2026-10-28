@@ -9,7 +9,7 @@ description: Add or update a framework/CMS integration recipe (README "## Framew
    `init()` in the framework's client-only mount hook (after hydration). DOM watching handles route changes, re-renders and late
    content; a nav removed from the DOM destroys its own instance. Never call `init()` during SSR (it's a no-op anyway).
 2. **Write the recipe** as a `### <Framework>` subsection in README `## Frameworks` (keep alphabetical order of the existing list's style):
-   one sentence on where the call goes, then a fenced code block with the real file name in the label. Markup = the nav with `data-spy`
+   one sentence on where the call goes, then a fenced code block with the real file name in the label. Markup = the nav with `data-chapter`
    attributes; no framework component wrapper. Use the package name (`chapterize-js`) via the literal import specifier (it is listed in the rename procedure).
 3. **Check facts** against the framework's current docs (hook names, client-only directives, plugin APIs); cite in the PR/report if unsure.
 4. In the sibling site repo `../chapterize-js-site`: `npm test`. `/frameworks` regenerates from this README (and the site's

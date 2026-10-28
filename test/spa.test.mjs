@@ -10,7 +10,7 @@ before(async () => (t = await setup()));
 after(() => t.close());
 
 const toc = (page) => page.$$eval('#toc a', (as) => as.map((a) => a.textContent));
-const count = (page) => page.evaluate(() => window.app && document.querySelectorAll('[data-spy-on]').length);
+const count = (page) => page.evaluate(() => window.app && document.querySelectorAll('[data-chapter-on]').length);
 const open = async () => {
   const o = await t.open('/test/fixtures/spa.html');
   await until(o.page, () => document.querySelectorAll('#toc a').length == 4 && document.querySelectorAll('#manual a').length == 4);
@@ -45,15 +45,15 @@ test('route change: the outline rebuilds from the new view, ids regenerate, the 
 test('re-rendered and remounted navs: replaced, removed and re-added navs get exactly one live instance', async () => {
   const { page, ctx, errors } = await open();
   await page.evaluate(() => app.rerenderNav());
-  await until(page, () => document.querySelectorAll('#toc a').length == 4 && document.querySelector('#toc[data-spy-on] a.is-active'));
+  await until(page, () => document.querySelectorAll('#toc a').length == 4 && document.querySelector('#toc[data-chapter-on] a.is-active'));
   assert.equal(await page.evaluate(() => app.init().instances.length), 2);
   await page.evaluate(() => app.removeNav());
   await until(page, () => app.init().instances.length == 1);
-  assert.equal(await page.evaluate(() => app.saved.querySelector('spy-rail')), null, 'a removed nav is cleaned up');
+  assert.equal(await page.evaluate(() => app.saved.querySelector('chapter-rail')), null, 'a removed nav is cleaned up');
   await page.evaluate(() => app.addNav());
   await until(page, () => app.init().instances.length == 2 && document.querySelector('#toc a.is-active'));
   assert.equal(await page.$$eval('#toc > ol', (l) => l.length), 1, 'one list, never two');
-  assert.equal(await page.$$eval('#toc spy-rail', (l) => l.length), 1, 'one marker');
+  assert.equal(await page.$$eval('#toc chapter-rail', (l) => l.length), 1, 'one marker');
   assert.equal(await count(page), 1);
   assert.deepEqual(errors, []);
   await ctx.close();
@@ -66,10 +66,10 @@ test('live DOM edits: late headings, heading text changes and attribute changes 
   await page.evaluate(() => (document.querySelector('#view h2').firstChild.data = 'Alpha uno'));
   await until(page, () => document.querySelector('#toc a').textContent == 'Alpha uno');
   assert.equal(await page.$eval('#toc a', (a) => a.hash), '#alpha-one', 'existing ids stay stable when text changes');
-  await page.evaluate(() => document.getElementById('toc').setAttribute('data-spy-marker', 'pill'));
-  await until(page, () => document.getElementById('toc').getAttribute('data-spy-on') == 'pill');
-  await page.evaluate(() => document.getElementById('toc').removeAttribute('data-spy-marker'));
-  await until(page, () => !document.getElementById('toc').hasAttribute('data-spy-on') && !document.querySelector('#toc spy-rail'));
+  await page.evaluate(() => document.getElementById('toc').setAttribute('data-chapter-marker', 'pill'));
+  await until(page, () => document.getElementById('toc').getAttribute('data-chapter-on') == 'pill');
+  await page.evaluate(() => document.getElementById('toc').removeAttribute('data-chapter-marker'));
+  await until(page, () => !document.getElementById('toc').hasAttribute('data-chapter-on') && !document.querySelector('#toc chapter-rail'));
   // the library's own writes never trigger a rebuild loop
   const n = await page.evaluate(() => new Promise((r) => {
     let k = 0;
@@ -78,8 +78,8 @@ test('live DOM edits: late headings, heading text changes and attribute changes 
     setTimeout(() => (mo.disconnect(), r(k)), 400);
   }));
   assert.equal(n, 0, 'quiet when nothing changes');
-  // removing data-spy stops spying that nav (attributes off the nav, classes gone)
-  await page.evaluate(() => document.getElementById('toc').removeAttribute('data-spy'));
+  // removing data-chapter stops spying that nav (attributes off the nav, classes gone)
+  await page.evaluate(() => document.getElementById('toc').removeAttribute('data-chapter'));
   await until(page, () => !document.querySelector('#toc .is-active') && app.init().instances.length == 1);
   assert.deepEqual(errors, []);
   await ctx.close();
@@ -108,10 +108,10 @@ test('routers: intercepted clicks are left alone, hash routes keep their URL, ro
   await ctx.close();
 });
 
-test('global destroy() stops everything and init() starts again; shadow DOM navs work with spy()', async () => {
+test('global destroy() stops everything and init() starts again; shadow DOM navs work with chapterjs()', async () => {
   const { page, ctx, errors } = await open();
   await page.evaluate(() => app.destroy());
-  assert.deepEqual(await page.evaluate(() => [document.querySelectorAll('#toc a').length, document.querySelectorAll('[data-spy-on], .is-active, [aria-current]').length, document.getElementById('toc').hasAttribute('aria-label')]), [0, 0, false]);
+  assert.deepEqual(await page.evaluate(() => [document.querySelectorAll('#toc a').length, document.querySelectorAll('[data-chapter-on], .is-active, [aria-current]').length, document.getElementById('toc').hasAttribute('aria-label')]), [0, 0, false]);
   await page.evaluate(() => app.late());
   await settle(page, 200);
   assert.equal(await page.$$eval('#toc a', (l) => l.length), 0, 'no DOM watching after destroy');
@@ -120,7 +120,7 @@ test('global destroy() stops everything and init() starts again; shadow DOM navs
   // shadow DOM: the marker sheet is adopted into the shadow root, ids resolve inside it
   const s = await page.evaluate(() => {
     const i = app.shadow(), r = document.getElementById('host').shadowRoot;
-    return { links: i.links.length, ids: [...r.querySelectorAll('h3')].map((h) => h.id), sheet: r.adoptedStyleSheets.length, on: r.querySelector('nav').getAttribute('data-spy-on') };
+    return { links: i.links.length, ids: [...r.querySelectorAll('h3')].map((h) => h.id), sheet: r.adoptedStyleSheets.length, on: r.querySelector('nav').getAttribute('data-chapter-on') };
   });
   assert.deepEqual(s, { links: 2, ids: ['shadow-one', 'shadow-two'], sheet: 1, on: 'pill' });
   await page.evaluate(() => document.getElementById('host').shadowRoot.getElementById('shadow-two').scrollIntoView());

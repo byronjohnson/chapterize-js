@@ -14,7 +14,7 @@ the website is the sibling repo `chapterize-js-site` (it vendors this repo's `di
 
 ## Goals (never regress one to help another)
 1. Simpler than Tocbot: attributes only, zero JS config, auto ids.
-2. Zero deps; core `dist/index.min.js` < 5 KB gzip soft limit (now 5,022 B). Report the number when `src/` changes.
+2. Zero deps; core `dist/index.min.js` < 5 KB gzip soft limit (now 5,037 B, 2026-10-28). Report the number when `src/` changes.
 3. Most beautiful: opt-in gliding marker (`line`, `pill`, `minimal`).
 4. Accessibility first: `aria-current`, auto label, focus to section, reduced motion = instant.
 5. Correct: last/short sections, offsets, first click, CSS smooth scroll, hash routers.
@@ -23,7 +23,7 @@ the website is the sibling repo `chapterize-js-site` (it vendors this repo's `di
 ## Invariants
 - Modern features always have a fallback; never depend on one missing in Chromium, Firefox or WebKit.
 - CSSOM only for styles (CSP-safe); no `<style>`/`style=""` strings. The site (sibling repo) runs under CSP `script-src 'self'; style-src 'self'`.
-- `data-spy*`, `.is-active`, `.is-trail`, `spy:change`, `--spy-*`, `@layer spy` are frozen unless Byron says otherwise.
+- `data-chapter*`, `.is-active`, `.is-trail`, `chapter:change`, `--chapter-*`, `@layer chapter` are frozen unless Byron says otherwise.
 
 ## Approvals (hard stop)
 - Never `npm publish`, `git push`, `git init`, deploy, log in to services, or touch other folders (e.g. `/workspace/scrollspy-demo` (the original prototype), `/workspace/ghost-reveal`) without Byron's explicit OK.

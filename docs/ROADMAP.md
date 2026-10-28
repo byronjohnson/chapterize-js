@@ -19,7 +19,7 @@ Evaluated 2026-10-23 against the test engines (Chrome 156.0.8078.47, Playwright 
 
 ## Plan (candidates, not promises)
 
-1. When a second engine ships it: optional `data-spy-native` that sets `scroll-target-group: auto` on the nav and
+1. When a second engine ships it: optional `data-chapter-native` that sets `scroll-target-group: auto` on the nav and
    lets `:target-current` style links, while the library keeps `aria-current`, events and the marker.
 2. Cross-check our activation against `:target-current` in Chrome in a test, and document differences.
 3. Marker motion via scroll-driven animations where available (no JS per frame), keeping the transition fallback.

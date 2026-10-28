@@ -20,7 +20,7 @@ test('SSR: ESM, auto and CJS builds import in Node without a DOM; init() is a no
   const req = createRequire(import.meta.url);
   for (const f of ['../dist/index.cjs', '../dist/auto.cjs']) assert.ok(req(f), f);
   const cjs = req('../dist/index.cjs');
-  assert.deepEqual(Object.keys(cjs).sort(), ['defaults', 'destroy', 'init', 'refresh', 'slug', 'spy', 'version']);
+  assert.deepEqual(Object.keys(cjs).sort(), ['chapterjs', 'defaults', 'destroy', 'init', 'refresh', 'slug', 'version']);
   assert.equal(cjs.version, pkg.version);
   assert.deepEqual(cjs.defaults, { marker: false, hash: true, observe: true });
   assert.equal(Object.keys(globalThis).sort().join(), before, 'no globals added on the server');
@@ -30,7 +30,7 @@ test('package.json: exports resolve by name, files are dist + types only, sideEf
   const self = await import(pkg.name);
   assert.equal(typeof self.init, 'function');
   assert.equal(typeof (await import(pkg.name + '/auto')).default.destroy, 'function');
-  assert.equal(typeof createRequire(import.meta.url)(pkg.name).spy, 'function');
+  assert.equal(typeof createRequire(import.meta.url)(pkg.name).chapterjs, 'function');
   assert.deepEqual(pkg.files, ['dist', 'types']);
   assert.ok(pkg.sideEffects.includes('./dist/auto.js') && !pkg.sideEffects.includes('./dist/index.js'));
   assert.deepEqual(pkg.dependencies ?? {}, {}, 'zero dependencies');

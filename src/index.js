@@ -1,24 +1,24 @@
-// Core library (ESM). SSR-safe: nothing here touches window or document until init() or spy() is called.
+// Core library (ESM). SSR-safe: nothing here touches window or document until init() or chapterjs() is called.
 // The build replaces __VERSION__ and inlines ./marker.css (minified) as a string.
 import CSS from './marker.css';
 
 export const version = __VERSION__;
 
-/** Option defaults. Per-nav data-spy-* attributes win over options, options win over these. */
+/** Option defaults. Per-nav data-chapter-* attributes win over options, options win over these. */
 export const defaults = { marker: false, hash: true, observe: true };
 
-const SEL = '[data-spy]';
-const KEY = Symbol.for('data-spy');
+const SEL = '[data-chapter]';
+const KEY = Symbol.for('data-chapter');
 const ACTIVE = 'is-active';
 const TRAIL = 'is-trail';
 const PRESETS = { line: 1, pill: 1, minimal: 1 };
 const LINE = 0.25; // the activation line sits `offset` + 25% down the viewport
-const WATCHED = ['id', 'href', 'data-spy', 'data-spy-build', 'data-spy-offset', 'data-spy-marker', 'data-spy-hash', 'data-spy-label', 'data-spy-ignore'];
-const PROPS = ['spy-y', 'spy-h', 'spy-x', 'spy-w', 'spy-progress', '_l'];
+const WATCHED = ['id', 'href', 'data-chapter', 'data-chapter-build', 'data-chapter-offset', 'data-chapter-marker', 'data-chapter-hash', 'data-chapter-label', 'data-chapter-ignore'];
+const PROPS = ['chapter-y', 'chapter-h', 'chapter-x', 'chapter-w', 'chapter-progress', '_l'];
 
 const instances = new Set();
 const off = new WeakSet(); // navs destroyed on purpose: DOM watching must not bring them back
-const scanned = new WeakSet(); // navs found by init() (vs. spy(nav) calls)
+const scanned = new WeakSet(); // navs found by init() (vs. chapterjs(nav) calls)
 const sheets = new WeakMap(); // Document | ShadowRoot -> adopted marker sheet
 let env = null; // shared browser state, created on first use
 let ctl = null; // the init() controller
@@ -30,7 +30,7 @@ const no = (v) => v === false || v === 'false' || v === 'none';
 const hashId = () => {
   try { return decodeURIComponent(location.hash.slice(1)); } catch { return location.hash.slice(1); }
 };
-const ours = (n) => n.localName == 'spy-rail' || n.localName == 'spy-band';
+const ours = (n) => n.localName == 'chapter-rail' || n.localName == 'chapter-band';
 const relevant = (r) => r.type != 'childList' || [...r.addedNodes, ...r.removedNodes].some((n) => !ours(n));
 
 // One set of global listeners for every instance, created lazily (so importing is free and SSR-safe).
@@ -56,7 +56,7 @@ function setup() {
 }
 
 // DOM watching: one MutationObserver for the document, debounced. Covers SPA route changes, late-rendered
-// content, headings re-rendered by a framework, navs added/removed, and data-spy-* attribute edits.
+// content, headings re-rendered by a framework, navs added/removed, and data-chapter-* attribute edits.
 const schedule = () => (clearTimeout(env.t), (env.t = setTimeout(sync, 40)));
 const sync = () => {
   for (const i of [...instances]) i._soft();
@@ -97,16 +97,16 @@ export const slug = (text, root = globalThis.document) => {
 };
 
 /**
- * Spy one nav: build its list (data-spy-build), track the section being read, mark the active link,
- * draw the marker (data-spy-marker). Returns the instance (the same one on repeated calls).
+ * Watch one nav: build its list (data-chapter-build), track the section being read, mark the active link,
+ * draw the marker (data-chapter-marker). Returns the instance (the same one on repeated calls).
  */
-export function spy(nav, o = {}) {
+export function chapterjs(nav, o = {}) {
   if (nav[KEY]) return o.marker != null && nav[KEY].marker(o.marker), nav[KEY];
   off.delete(nav);
   const E = (env ||= setup());
   const doc = nav.ownerDocument, root = nav.getRootNode(), win = doc.defaultView;
   const el = (t) => doc.createElement(t);
-  const attr = (k) => nav.getAttribute('data-spy-' + k);
+  const attr = (k) => nav.getAttribute('data-chapter-' + k);
   const css = (x) => win.getComputedStyle(x);
   let links = [], targets = [], passed = [], cur = -1, ready = 0, lock = 0, held = -1, heldAt = null;
   let io, list, sig, scroller = null, preset = null, forced, rail, band, k = -1, tail = 0, lastOff, labelled;
@@ -123,19 +123,19 @@ export function spy(nav, o = {}) {
       if (/auto|scroll|overlay/.test(css(p).overflowY) && p.scrollHeight > p.clientHeight) return p;
     return null;
   };
-  // offset: data-spy-offset, else the option, else the scroller's CSS scroll-padding-top (sticky headers)
+  // offset: data-chapter-offset, else the option, else the scroller's CSS scroll-padding-top (sticky headers)
   const offset = () => num(attr('offset')) ?? num(o.offset) ?? (parseFloat(css(se()).scrollPaddingTop) || 0);
 
   // ---- build: a nested <ol> from the page's headings
   const label = (h) =>
-    h.getAttribute('data-spy-label') ||
+    h.getAttribute('data-chapter-label') ||
     [...h.childNodes].map((n) => (n.nodeType == 1 && (n.getAttribute('aria-hidden') == 'true' || n.matches('a[href^="#"]')) ? '' : n.textContent)).join('').replace(/\s+/g, ' ').trim() ||
     h.textContent.replace(/\s+/g, ' ').trim();
   const build = () => {
     let s = attr('build') ?? o.build;
     if (s == null || s === false) return;
     s ||= root.querySelector('main,[role=main]') ? 'main h2,main h3,[role=main] h2,[role=main] h3' : 'h2,h3';
-    const hs = [...root.querySelectorAll(s)].filter((h) => !nav.contains(h) && !h.closest('[data-spy-ignore]') && label(h));
+    const hs = [...root.querySelectorAll(s)].filter((h) => !nav.contains(h) && !h.closest('[data-chapter-ignore]') && label(h));
     const next = hs.map((h) => h.localName + '\u0001' + h.id + '\u0001' + label(h)).join('\u0002');
     if (next == sig && list?.isConnected) return;
     quiet(() => {
@@ -232,11 +232,11 @@ export function spy(nav, o = {}) {
     // a nav that scrolls on its own keeps the active link in view
     if (nav.scrollHeight > nav.clientHeight + 1 && (r.top < n.top || r.bottom > n.bottom))
       nav.scrollTo({ top: r.top - top - (nav.clientHeight - r.height) / 2, behavior: E.motion.matches ? 'instant' : 'smooth' });
-    prop('spy-y', r.top - top + 'px');
-    prop('spy-h', r.height + 'px');
-    prop('spy-x', r.left - left + 'px');
-    prop('spy-w', r.width + 'px');
-    prop('spy-progress', links.length > 1 ? +(cur / (links.length - 1)).toFixed(4) : 1);
+    prop('chapter-y', r.top - top + 'px');
+    prop('chapter-h', r.height + 'px');
+    prop('chapter-x', r.left - left + 'px');
+    prop('chapter-w', r.width + 'px');
+    prop('chapter-progress', links.length > 1 ? +(cur / (links.length - 1)).toFixed(4) : 1);
     prop('_l', links.at(-1).getBoundingClientRect().bottom - top + 'px'); // rail length
   };
   // parent items of the active one (nested lists): li > a of every ancestor li inside the nav
@@ -260,10 +260,10 @@ export function spy(nav, o = {}) {
     flag(0);
     flag(1, links[(cur = i)]);
     mark();
-    nav.dispatchEvent(new win.CustomEvent('spy:change', { bubbles: true, detail: { index: i, id: targets[i].id, link: links[i], target: targets[i], previous } }));
+    nav.dispatchEvent(new win.CustomEvent('chapter:change', { bubbles: true, detail: { index: i, id: targets[i].id, link: links[i], target: targets[i], previous } }));
   };
 
-  // ---- marker: <spy-rail> (track + fill + glowing line) and <spy-band> (highlight / pill)
+  // ---- marker: <chapter-rail> (track + fill + glowing line) and <chapter-band> (highlight / pill)
   const wanted = () => {
     const v = forced !== undefined ? forced : attr('marker') ?? o.marker ?? defaults.marker;
     return v == null || no(v) ? null : PRESETS[v] ? v : 'line';
@@ -274,11 +274,11 @@ export function spy(nav, o = {}) {
       rail?.remove();
       band?.remove();
       rail = band = null;
-      return nav.removeAttribute('data-spy-on');
+      return nav.removeAttribute('data-chapter-on');
     }
     adopt(root);
-    nav.setAttribute('data-spy-on', p);
-    if (!rail) (rail = el('spy-rail')), (band = el('spy-band'));
+    nav.setAttribute('data-chapter-on', p);
+    if (!rail) (rail = el('chapter-rail')), (band = el('chapter-band'));
     rail.parentNode != nav && nav.append(rail, band);
     mark();
   };
@@ -308,7 +308,7 @@ export function spy(nav, o = {}) {
     }
     if (b != 'smooth') heldAt = pos();
     const h = attr('hash') ?? o.hash ?? defaults.hash;
-    // hash routers (#/route, #!/route) keep their URL; so does data-spy-hash="false"
+    // hash routers (#/route, #!/route) keep their URL; so does data-chapter-hash="false"
     if (!silent && !no(h) && hashId() != t.id && !/^#[!/]/.test(location.hash))
       try { history.pushState(history.state, '', '#' + t.id); } catch { /* sandboxed or file:// contexts may refuse */ }
     if (silent) return;
@@ -326,7 +326,7 @@ export function spy(nav, o = {}) {
   // ---- lifecycle
   const ro = new win.ResizeObserver(() => (measure(), pick(), mark()));
   const soft = () => {
-    if (!nav.isConnected || (scanned.has(nav) && !nav.hasAttribute('data-spy'))) return destroy();
+    if (!nav.isConnected || (scanned.has(nav) && !nav.hasAttribute('data-chapter'))) return destroy();
     build();
     const ol = links, ot = targets;
     collect();
@@ -389,7 +389,7 @@ export function spy(nav, o = {}) {
   // accessible name: an existing label wins; else the nav's own heading; else "On this page"
   if ((nav.localName == 'nav' || nav.getAttribute('role') == 'navigation') && !nav.hasAttribute('aria-label') && !nav.hasAttribute('aria-labelledby')) {
     const h = nav.querySelector('h1,h2,h3,h4,h5,h6');
-    if (h) h.id ||= 'spy-label-' + ++uid, nav.setAttribute((labelled = 'aria-labelledby'), h.id);
+    if (h) h.id ||= 'chapter-label-' + ++uid, nav.setAttribute((labelled = 'aria-labelledby'), h.id);
     else nav.setAttribute((labelled = 'aria-label'), 'On this page');
   }
   nav.addEventListener('click', click);
@@ -403,7 +403,7 @@ export function spy(nav, o = {}) {
 const NOOP = { instances: [], refresh() {}, destroy() {} };
 
 /**
- * Spy every [data-spy] nav in the document, and keep doing it as the DOM changes (SPA routes,
+ * Watch every [data-chapter] nav in the document, and keep doing it as the DOM changes (SPA routes,
  * late content, re-rendered navs). Idempotent: repeated calls return the same controller.
  * On the server (no document) it is a harmless no-op.
  */
@@ -419,7 +419,7 @@ export function init(o = {}) {
     _o: opts,
     _scan() {
       for (const n of (opts.root || document).querySelectorAll(SEL))
-        if (!n[KEY] && !off.has(n)) scanned.add(n), spy(n, opts);
+        if (!n[KEY] && !off.has(n)) scanned.add(n), chapterjs(n, opts);
     },
   };
   (opts.observe ?? defaults.observe) && watch(document);
