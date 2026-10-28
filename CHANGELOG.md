@@ -2,7 +2,7 @@
 
 ## 0.1.0
 
-First release. Unpublished.
+First release. Published to npm on 2026-10-28 as [`chapterize-js@0.1.0`](https://www.npmjs.com/package/chapterize-js).
 
 Add `data-chapter` to a nav and Chapterize JS builds a nested outline from the headings already on the page, highlights the section being read, and can glide a marker between links. Zero dependencies. The core `dist/index.min.js` is 5,037 bytes gzip and `dist/global.min.js` is 5,333 bytes gzip (`npm run build`, 2026-10-28).
 

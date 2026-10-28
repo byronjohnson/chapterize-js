@@ -15,6 +15,8 @@
 
 ## Install
 
+[`chapterize-js` on npm](https://www.npmjs.com/package/chapterize-js), version 0.1.0.
+
 ```sh
 npm install chapterize-js
 ```

@@ -8,7 +8,7 @@ alwaysApply: true
 
 **North star: be the best and most modern way to automatically add a table of contents to a preexisting page DOM.**
 Zero-dependency TOC + scrollspy by Byron Johnson; "the accessible, attribute-only Tocbot alternative".
-Name: **Chapterize JS** (npm `chapterize-js`, global `Chapterize`); never hard-code it, use `scripts/brand.mjs` / `{{name}}`. v0.1.0, unpublished.
+Name: **Chapterize JS** (npm `chapterize-js`, global `Chapterize`); never hard-code it, use `scripts/brand.mjs` / `{{name}}`. v0.1.0, published to npm on 2026-10-28.
 Full context: `docs/PROJECT-GOALS.md`; quick start: `AGENTS.md`. This repo is the library only (GitHub + npm);
 the website is the sibling repo `chapterize-js-site` (it vendors this repo's `dist/`, README, llms.txt; see AGENTS.md).
 

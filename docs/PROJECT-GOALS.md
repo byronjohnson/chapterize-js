@@ -142,6 +142,7 @@ images or webfonts.
 - **Attributes and CSS variables renamed from `spy` to `chapter`** (Byron). `data-spy*` is now `data-chapter*` (`data-chapter`, `data-chapter-build`, `data-chapter-marker`, `data-chapter-offset`, `data-chapter-hash`, `data-chapter-label`, `data-chapter-ignore`, and the runtime `data-chapter-on`). `--spy-*` is now `--chapter-*`. This supersedes the 2026-10-23 decision that those names stayed `spy` because they described behavior.
 - **The rest of the `spy` names renamed the same day** (Byron). `spy()` is now `chapterjs()`. `spy:change` is `chapter:change`. `@layer spy` is `@layer chapter`. `<spy-rail>` and `<spy-band>` are `<chapter-rail>` and `<chapter-band>`. Exported types are `ChapterOptions`, `ChapterInstance`, `ChapterController`, `ChapterMarker`, and `ChapterChangeDetail`. Unchanged: `.is-active` / `.is-trail`, and the category words "scroll spy" / `scroll-spy` in the package description and keywords.
 - **`CHANGELOG.md` is in the npm package.** `files` is `dist`, `types`, and `CHANGELOG.md`. npm still adds README and LICENSE. `docs/` stays out.
+- **Published `chapterize-js@0.1.0` to npm** (2026-10-28, `latest`). Registry: https://www.npmjs.com/package/chapterize-js. GitHub `develop` is https://github.com/byronjohnson/chapterize-js. The site still builds from the sibling checkout and `vendor/chapterize-js/`; it has not added the npm package as a dependency.
 
 ## 11. Open questions for Byron
 

@@ -13,7 +13,7 @@ tracks the section being read with IntersectionObserver, marks it with `.is-acti
 and optionally draws a gliding marker from a constructed stylesheet (CSP-safe, `@layer chapter`).
 Positioning: **the accessible, attribute-only Tocbot alternative** (Gumshoe users are the easy first audience).
 Name: **Chapterize JS** (npm `chapterize-js`, script-tag global `Chapterize`; named 2026-10-23, see the decisions log).
-v0.1.0, **unpublished**. Local git is on `develop`; there is no GitHub remote yet (Byron does git).
+v0.1.0, **published** to npm on 2026-10-28 ([chapterize-js](https://www.npmjs.com/package/chapterize-js)). GitHub: [byronjohnson/chapterize-js](https://github.com/byronjohnson/chapterize-js), branch `develop`.
 The npm `files` allowlist is `dist`, `types`, and `CHANGELOG.md` (no `docs/` in the package; npm also adds README and LICENSE).
 
 ## Goals (never regress one to help another)
@@ -53,8 +53,7 @@ projects/
 The site reads this checkout through its `scripts/lib-root.mjs` (`../chapterize-js`, or `$CHAPTERIZE_ROOT`):
 `dist/` (bundled into the pages and served at `/dist`), `README.md` `## Frameworks` (rendered as `/frameworks`),
 `llms.txt` (served at `/llms.txt`), `package.json` (the name), `src/` + `types/` (its docs-accuracy test). Each site build
-copies those into the site repo's committed `vendor/chapterize-js/`, which is what Vercel builds from (this package
-is not on npm yet). `npm run dev` there watches this repo's `src/`, `README.md`, `llms.txt`, `types/` and `package.json`
+copies those into the site repo's committed `vendor/chapterize-js/`, which is what Vercel builds from. The package is on npm as `chapterize-js@0.1.0`; the site has not switched from that snapshot to an npm dependency. `npm run dev` there watches this repo's `src/`, `README.md`, `llms.txt`, `types/` and `package.json`
 and runs this repo's `npm run build` on a `src/` change. After a library change that the site shows, run the site's
 `npm test` (it re-syncs and checks the snapshot) and commit `vendor/` there too.
 

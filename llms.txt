@@ -34,4 +34,5 @@
 
 ## Docs
 
+- npm: https://www.npmjs.com/package/chapterize-js (0.1.0)
 - README: https://github.com/byronjohnson/chapterize-js#readme
