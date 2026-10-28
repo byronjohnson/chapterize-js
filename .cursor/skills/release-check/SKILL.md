@@ -5,7 +5,7 @@ description: Pre-release checklist (sizes, tests in three engines, types, packag
 
 # Release check (read-only; never publish)
 
-1. Re-read `package.json`: `name` (`chapterize-js`; still free on npm? `npm view chapterize-js` should 404 until the first publish), `version`, `exports`, `files: [dist, types]`, `sideEffects`, `repository`.
+1. Re-read `package.json`: `name` (`chapterize-js`; still free on npm? `npm view chapterize-js` should 404 until the first publish), `version`, `exports`, `files: [dist, types, CHANGELOG.md]`, `sideEffects`, `repository`.
 2. `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp`, then `npm run test:all` and `npm run test:types`. Record pass/fail per engine.
 3. `npm run size`: core `index.min.js` < 5 KB gzip soft limit; update the numbers in README, AGENTS.md, PROJECT-GOALS.md, `.cursor/rules/core.mdc` and the homepage eyebrow if they changed.
 4. `npm pack --dry-run`: only `dist/`, `types/`, `package.json`, README, LICENSE (npm adds the last two). No `docs/`, `site/`, `test/`.

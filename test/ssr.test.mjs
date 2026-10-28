@@ -26,12 +26,12 @@ test('SSR: ESM, auto and CJS builds import in Node without a DOM; init() is a no
   assert.equal(Object.keys(globalThis).sort().join(), before, 'no globals added on the server');
 });
 
-test('package.json: exports resolve by name, files are dist + types only, sideEffects flags the auto entries', async () => {
+test('package.json: exports resolve by name, files are dist, types and the changelog, sideEffects flags the auto entries', async () => {
   const self = await import(pkg.name);
   assert.equal(typeof self.init, 'function');
   assert.equal(typeof (await import(pkg.name + '/auto')).default.destroy, 'function');
   assert.equal(typeof createRequire(import.meta.url)(pkg.name).chapterjs, 'function');
-  assert.deepEqual(pkg.files, ['dist', 'types']);
+  assert.deepEqual(pkg.files, ['dist', 'types', 'CHANGELOG.md']);
   assert.ok(pkg.sideEffects.includes('./dist/auto.js') && !pkg.sideEffects.includes('./dist/index.js'));
   assert.deepEqual(pkg.dependencies ?? {}, {}, 'zero dependencies');
 });

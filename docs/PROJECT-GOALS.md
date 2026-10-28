@@ -85,7 +85,7 @@ images or webfonts.
 - Modern, distinctive, editorial; no icon-above-title card grids, no generic SaaS template look.
 - Effects add no load weight: CSS gradients, custom properties, no images, no fonts, no extra JS.
 - Motion is purposeful (the marker glides; nothing else wiggles) and disappears under reduced motion.
-- No docs files in the npm package (`files: [dist, types]`).
+- No `docs/` in the npm package. `files` is `dist`, `types`, and `CHANGELOG.md` (npm also adds README and LICENSE).
 - Live reload for everything visual (`npm run dev`).
 - **No framework for the demo site.** It must stay as light as the library's pitch (Next.js was tried and rejected, 2026-10-23).
 
@@ -141,6 +141,7 @@ images or webfonts.
 
 - **Attributes and CSS variables renamed from `spy` to `chapter`** (Byron). `data-spy*` is now `data-chapter*` (`data-chapter`, `data-chapter-build`, `data-chapter-marker`, `data-chapter-offset`, `data-chapter-hash`, `data-chapter-label`, `data-chapter-ignore`, and the runtime `data-chapter-on`). `--spy-*` is now `--chapter-*`. This supersedes the 2026-10-23 decision that those names stayed `spy` because they described behavior.
 - **The rest of the `spy` names renamed the same day** (Byron). `spy()` is now `chapterjs()`. `spy:change` is `chapter:change`. `@layer spy` is `@layer chapter`. `<spy-rail>` and `<spy-band>` are `<chapter-rail>` and `<chapter-band>`. Exported types are `ChapterOptions`, `ChapterInstance`, `ChapterController`, `ChapterMarker`, and `ChapterChangeDetail`. Unchanged: `.is-active` / `.is-trail`, and the category words "scroll spy" / `scroll-spy` in the package description and keywords.
+- **`CHANGELOG.md` is in the npm package.** `files` is `dist`, `types`, and `CHANGELOG.md`. npm still adds README and LICENSE. `docs/` stays out.
 
 ## 11. Open questions for Byron
 

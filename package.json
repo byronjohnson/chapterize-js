@@ -29,7 +29,8 @@
   },
   "files": [
     "dist",
-    "types"
+    "types",
+    "CHANGELOG.md"
   ],
   "sideEffects": [
     "./dist/auto.js",
