@@ -16,3 +16,4 @@ export is missing from README, `llms.txt` or `types/`; the site repo's `test/sit
 the same for its pages, reading this checkout. The README `## Frameworks` section is the single source for the site's `/frameworks`. Its Next.js recipe was verified in a real Next 16 app (2026-10-23): change it only with a re-check in a Next app.
 Sizes in README/AGENTS/PROJECT-GOALS are measured numbers: re-measure with `npm run size`, don't guess.
 Add a decisions-log entry to `docs/PROJECT-GOALS.md` (dated) for any product decision.
+Prose in those files follows `.cursor/skills/write-docs/SKILL.md`: say what the library does before any jargon.

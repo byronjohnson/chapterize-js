@@ -15,7 +15,7 @@
 
 ## Install
 
-[`chapterize-js` on npm](https://www.npmjs.com/package/chapterize-js), version 0.1.0.
+[`chapterize-js` on npm](https://www.npmjs.com/package/chapterize-js), version 0.1.0. The site is [chapterizejs.com](https://chapterizejs.com).
 
 ```sh
 npm install chapterize-js
@@ -83,7 +83,7 @@ Drawing your own? Leave the attribute off. The nav still gets `--chapter-y`, `--
 
 ## Frameworks
 
-Chapterize JS is plain DOM, so the recipe is the same everywhere: render a nav with `data-chapter`, and call `init()` once on the client after the first render. `init()` is idempotent and keeps watching the DOM, so route changes, re-rendered headings and navs that mount later are picked up without more code. When a nav leaves the DOM its instance is destroyed for you.
+The recipe is the same in every framework. Render a nav with `data-chapter`, and call `init()` once in the browser after the page has rendered. Calling `init()` again is safe. The table of contents updates when the route changes, headings are re-rendered, or a nav is added later. When a nav is removed, its table of contents is removed too.
 
 ### Plain HTML
 
@@ -95,7 +95,7 @@ Chapterize JS is plain DOM, so the recipe is the same everywhere: render a nav w
 
 ### React
 
-Call `init()` in an effect, after hydration, so the built list never causes a hydration mismatch. Strict Mode's double effect is harmless.
+Call `init()` after the component has rendered in the browser, so the list agrees with the HTML the server sent. React Strict Mode running the effect twice is safe.
 
 ```jsx
 import { useEffect } from 'react';
@@ -109,7 +109,7 @@ export function Toc() {
 
 ### Next.js
 
-App Router: put the nav in any Server Component and render one small Client Component that calls `init()`, once, in a layout. Pages stay static, the nav ships no JavaScript of its own, and on client-side navigation (`next/link`) the DOM watching rebuilds the outline from the new page.
+App Router: put the nav in any Server Component and render one small Client Component that calls `init()`, once, in a layout. Pages stay static, the nav ships no JavaScript of its own, and on client-side navigation (`next/link`) the table of contents rebuilds from the new page.
 
 ```tsx app/chapter-init.tsx
 'use client';
@@ -164,7 +164,7 @@ onMounted(() => init());
 
 ### Nuxt
 
-A client plugin that waits for the app to mount (so hydration sees the server markup first).
+A client plugin that runs after the app has mounted, so the server HTML is in place first.
 
 ```js
 // plugins/toc.client.js
@@ -188,7 +188,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 ### Angular
 
-`afterNextRender` runs only in the browser, after the view is in the DOM. Links work with `<base href>`.
+`afterNextRender` runs in the browser, after the view is on the page. Links work on a page that uses `<base href>`.
 
 ```ts
 import { Component, afterNextRender } from '@angular/core';
@@ -205,7 +205,7 @@ export class TocComponent {
 
 ### Astro
 
-A bundled script runs once per page; with `<ClientRouter />` the DOM watching follows each swap.
+The script runs once per page. With `<ClientRouter />`, the table of contents follows each page swap.
 
 ```astro
 <nav data-chapter data-chapter-build="article h2, article h3" data-chapter-marker></nav>
@@ -242,7 +242,7 @@ add_action('wp_enqueue_scripts', function () {
 
 ### Hugo
 
-Hugo's headings already have ids, which are kept. Build the outline, or spy Hugo's own `.TableOfContents`.
+Hugo's headings already have ids, and those ids are kept. Build the list from your content, or highlight the links in Hugo's own `.TableOfContents`.
 
 ```html
 <nav data-chapter data-chapter-build=".content h2, .content h3" data-chapter-marker></nav>

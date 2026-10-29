@@ -41,7 +41,7 @@ Before a full run: `pkill -f "scripts/(serve|dev).mjs"; fuser -k 8080/tcp`.
 ## Two repos: this library and the website
 
 This repo is **only the library** that goes to GitHub (`byronjohnson/chapterize-js`) and npm (`chapterize-js`). The
-website is the sibling repo **`chapterize-js-site`** (split on 2026-10-23, the same way as `ghost-reveal` /
+website is the sibling repo **`chapterize-js-site`**, in production at https://chapterizejs.com (split on 2026-10-23, the same way as `ghost-reveal` /
 `ghost-reveal-site`). Check them out next to each other:
 
 ```
@@ -52,7 +52,7 @@ projects/
 
 The site reads this checkout through its `scripts/lib-root.mjs` (`../chapterize-js`, or `$CHAPTERIZE_ROOT`):
 `dist/` (bundled into the pages and served at `/dist`), `README.md` `## Frameworks` (rendered as `/frameworks`),
-`llms.txt` (served at `/llms.txt`), `package.json` (the name), `src/` + `types/` (its docs-accuracy test). Each site build
+`llms.txt` (served at `/llms-full.txt`; the site generates its own `/llms.txt`), `package.json` (the name), `src/` + `types/` (its docs-accuracy test). Each site build
 copies those into the site repo's committed `vendor/chapterize-js/`, which is what Vercel builds from. The package is on npm as `chapterize-js@0.1.0`; the site has not switched from that snapshot to an npm dependency. `npm run dev` there watches this repo's `src/`, `README.md`, `llms.txt`, `types/` and `package.json`
 and runs this repo's `npm run build` on a `src/` change. After a library change that the site shows, run the site's
 `npm test` (it re-syncs and checks the snapshot) and commit `vendor/` there too.
@@ -95,7 +95,7 @@ site repo reads this same `package.json` (its `scripts/brand.mjs`, `{{name}}` `{
    `test/types/check.ts` (self-import), comments in `src/auto.js` and `types/auto.d.ts`; in `chapterize-js-site`:
    `site/assets/site.js` (`import … from 'chapterize-js'`, resolved by an esbuild alias), `scripts/lib-root.mjs` and
    `scripts/sync-lib.mjs` (sibling folder + vendor folder names). Find them: `rg -i chapterize --glob '!node_modules' --glob '!dist' --glob '!vendor'`.
-3. Set `SITE_URL` for the site (Vercel env var; see the site's `docs/SITE.md`; the domain is not decided yet).
+3. The site's production origin is https://chapterizejs.com (`SITE_URL` on Vercel; see the site's `docs/SITE.md`). A rename does not change it.
 4. `npm install` here (refreshes package-lock + the self-reference), `npm run test:all`, `npm run test:types`; then the site's `npm run test:all`.
 
 ## Workflow rules
@@ -103,6 +103,7 @@ site repo reads this same `package.json` (its `scripts/brand.mjs`, `{{name}}` `{
 - **Approvals:** never publish to npm, push to GitHub, deploy, or delete/move other folders without Byron's explicit OK. No `git init` (Byron does git; this repo and `chapterize-js-site` are separate git repos).
 - **Byron edits files himself.** Re-read a file right before changing it and keep his edits.
 - **Design taste** (mostly for the site repo): dark, editorial, distinctive. No icon-above-title card grids. Effects add no load weight (CSS only, no images/fonts).
+- **Copy:** user-facing docs follow `.cursor/skills/write-docs/SKILL.md`. The homepage hero lead is the standard: say what the library does before any jargon.
 - **Honesty:** measure or cite sizes, browser support and framework claims; say what was and wasn't run.
 - **Tests:** attach listeners before the action, bound every wait, report results per engine.
 
