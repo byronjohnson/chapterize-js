@@ -38,6 +38,10 @@ Then name the attribute, the option, or the constraint.
 - Do not invent features, sizes, or support. Measure a number before writing it.
 - Sample text on a demo (the plain page, the marker panels) must not repeat the explanation under the wrong heading.
 
+## Discovery files
+
+The site build writes `/llms.txt` and `/ai.txt` in `chapterize-js-site/scripts/build-site.mjs`. The map's summary is the standard sentence. If that sentence or the access flags change, change both generated files in the same edit. The library `llms.txt` is the API reference, served at `/llms-full.txt`. Do not replace it with the site map.
+
 ## Before / after
 
 Before: "One attribute turns the headings already on your page into a live, accessible table of contents. It highlights the section being read, glides a marker between links, and works the same in every framework."

@@ -10,7 +10,7 @@ description: Pre-release checklist (sizes, tests in three engines, types, packag
 3. `npm run size`: core `index.min.js` < 5 KB gzip soft limit; update the numbers in README, AGENTS.md, PROJECT-GOALS.md, `.cursor/rules/core.mdc` and the homepage eyebrow if they changed.
 4. `npm pack --dry-run`: only `dist/`, `types/`, `package.json`, README, LICENSE (npm adds the last two). No `docs/`, `site/`, `test/`.
 5. Smoke the published shapes: `node -e "require('<name>')"`, `node --input-type=module -e "import('<name>/auto')"`, and the global build on the site's `/plain` (sibling repo).
-6. Docs: README, `llms.txt`, CHANGELOG/decisions log current; `/frameworks` regenerated (it's built from README).
+6. Docs: README, library `llms.txt`, CHANGELOG/decisions log current; `/frameworks` regenerated (it's built from README). The site generates `/llms.txt` (the agent map), serves this repo's `llms.txt` at `/llms-full.txt`, and writes `/ai.txt`. The map's summary and the `ai.txt` flags must match.
 7. Site (sibling repo `../chapterize-js-site`): `npm run test:all` (re-syncs `vendor/chapterize-js/`), `node scripts/screens.mjs /workspace/release-` and review,
    Lighthouse 99–100 on `npm run preview` (see its `docs/SITE.md`). Once the package is on npm, decide whether the site switches
    from `vendor/` to a `chapterize-js` dependency (`scripts/lib-root.mjs` already prefers `node_modules` over `vendor/`).

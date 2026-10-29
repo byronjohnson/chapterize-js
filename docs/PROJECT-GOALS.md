@@ -77,7 +77,7 @@ Dark, editorial homepage that is itself the demo (the left rail TOC with the gli
 reading progress via scroll-driven animation with a JS fallback). Pages: `/` (docs), `/frameworks` (generated from
 README), `/markers` (live presets), `/plain` (the unstyled plain-HTML example using the global build), `/404`.
 Lives in the separate repo `chapterize-js-site` (see the 2026-10-23 split below), in production at https://chapterizejs.com. Static HTML on Vercel (`site/` → `site-dist/`), ~5 KB of site JS, no framework. Clean URLs (`/frameworks`, never
-`.html`), CSP `script-src 'self'; style-src 'self'`, hashed assets, sitemap, Lighthouse 100 across the board. No
+`.html`), CSP `script-src 'self' https://cdn.usefathom.com; style-src 'self'` (that host is also allowed for the Fathom image and connection), hashed assets, `/sitemap.xml`, `/llms.txt` (the agent map), `/llms-full.txt` (this repo's `llms.txt`), `/ai.txt`, Lighthouse 100 across the board. No
 images or webfonts.
 
 ## 9. Design taste (Byron's preferences)
@@ -147,11 +147,12 @@ images or webfonts.
 - **Production site is https://chapterizejs.com** (Byron, on Vercel, from `chapterize-js-site`). This settles the open domain / `SITE_URL`. The site build uses that origin for canonical, og, sitemap and robots unless `SITE_URL` or `VERCEL_PROJECT_PRODUCTION_URL` overrides it. The npm `homepage` points there.
 - **Fathom Analytics on the site** (Byron, site id `BVUWDQCR`). One deferred script, `https://cdn.usefathom.com/script.js`, in both layouts. The CSP stays closed except `script-src`, `img-src` and `connect-src` for that host: the script sends the pageview as an image and the departure ping with `sendBeacon` (checked against the script served on 2026-10-28). `localhost` and `127.0.0.1` are excluded, so local dev and the test suite are not counted. No SPA mode; each page is a full load.
 - **Docs voice** (Byron). User-facing copy is written as an expert JavaScript library marketer with 25 years of experience marketing JavaScript libraries and writing their content in order to bring in the largest audience. The homepage hero lead is the standard: "{{display}} adds a table of contents to any page that already has headings. It builds the list from those headings and highlights the section being read as the reader scrolls." Mechanism and attribute names come after that. The skill is `.cursor/skills/write-docs/SKILL.md` in both repos (keep the two copies identical).
+- **Hero title line** (site `site/assets/site.css`, `.hero h1`). The vertical line and the fading band share the heading's top and bottom. `overflow: clip` keeps the line's glow inside that box. The homepage and `/frameworks` both use it.
+- **Discovery files** (site build, `scripts/build-site.mjs`). `/sitemap.xml` lists the indexable pages (`/`, `/frameworks`, `/markers`, `/plain`; not `/404`). `/robots.txt` allows crawling, names the sitemap, and comments the agent index. `/llms.txt` is the agent map of the site (llms.txt v2: H1, summary, rules, then link lists). This repo's `llms.txt` stays the API reference and is served at `/llms-full.txt`. `/ai.txt` allows retrieval, training, summarization, and citation, and the map says the same. HTML pages link `rel="describedby"` to `/llms.txt`. These files are generated; they are not edited under `site/public`.
 
 ## 11. Open questions for Byron
 
-1. Create the two GitHub repos (placeholder `github.com/byronjohnson/chapterize-js` is already in package.json, README, llms.txt;
-   the site repo name, e.g. `byronjohnson/chapterize-js-site`, is up to Byron).
+1. The site repo's GitHub name (the library repo is https://github.com/byronjohnson/chapterize-js).
 2. OG image (none yet; text-only cards).
 3. Whether the marker CSS (≈0.74 KB gzip) should move to an opt-in entry (`/marker`) if the core needs headroom.
 
